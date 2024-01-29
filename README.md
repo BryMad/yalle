@@ -1,6 +1,6 @@
 # YALL\*E
 
-![](images/logo/logo.001.png)
+![](docs/logo.png)
 
 ## A LoneStar Codin' Experience
 
@@ -29,13 +29,15 @@ Experts have prophesied that American regional accents will one day be extinct. 
 
 ```
 console.log("Hello world!")
-```     
+```
+
 </td>
 <td>
 
 ```
 holler "Howdy world!"
 ```
+
 </td>
 <tr>
 </table>
@@ -56,12 +58,14 @@ JavaScript</th>
 ```
 let horseshoes = 10
 ```
+
 </td>
 <td>
 
 ```
 lasso horseshoes = 10
 ```
+
 </td>
 </tr>
 <tr>
@@ -70,12 +74,14 @@ lasso horseshoes = 10
 ```
 const HERD = "Alamo"
 ```
+
 </td>
 <td>
 
 ```
 lasso HERD = "Alamo"
 ```
+
 </td>
 </tr>
 </table>
