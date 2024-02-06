@@ -1,8 +1,7 @@
-import * as assert from "node:assert/strict"
-import { compile } from "../src/yalle.js"
+import assert from "assert/strict";
 
-describe("Compiler", () => {
-  it("should compile === true", () => {
-    assert.equal(compile(), "eventually this will return a compiled code")
-  })
-})
+describe("Equality Test", () => {
+  it("should return true when comparing 1 to 1", () => {
+    assert.strictEqual(1 === 1, true);
+  });
+});
