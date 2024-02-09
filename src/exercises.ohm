@@ -1,0 +1,6 @@
+PostalCode {
+  PostalCode = CanadianPostalCode
+  CanadianPostalCode = Letter Digit Letter (" " | "") Digit Letter Digit
+  Letter = "A" .. "Z" | "a" .. "z"
+  Digit = "0" .. "9"
+}
