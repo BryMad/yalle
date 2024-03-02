@@ -2,90 +2,113 @@
 
 ![](docs/logo.png)
 
-## A LoneStar Codin' Experience
+### A LoneStar Codin' Experience
 
-Experts have prophesied that American regional accents will one day be extinct. YALL\*E is a coding language for anyone who (like me) grew up hearing the soothing sounds of a Texas drawl and will miss it when it's gone. It's also for anyone else who wants to bring a bit of wild-west, rootin-tootin' LoneStar spirit to their hoity-toity, city-fied code.
+Experts have prophesied that American regional dialects will one day be extinct. YALL\*E is a coding language for anyone who (like me) grew up hearin' the soothing sounds of a Texas drawl and will miss it when it's gone. It's also for anyone lookin' to bring a bit of wild-west, rootin-tootin' LoneStar spirit to their hoity-toity, city-fied code.
 
-*(editors note to Dr. Toal: wishing I had an idea for a language that had a bit more of a coding function beyond just being language recast. Stretch goal is to add something else that makes it fun or that answers a coding need but currently still hunting for that. Also feeling a bit overwhelmed by the technical side of this class, so starting small for now.)*
+<br>
 
-*(editors note #2: had a big ole snafu today and realized I had misnamed my project. Had to restart and redo the tutorials for getting node set up, tests, etc. Had to triage where to invest time. The example programs in the README and in the examples folder are what fell by the wayside. Sorry about that! Will get them in soon)*
+<br>
 
-## Features
+# Features
 
 - Statically typed
 - Loops
 - Classes
 - Functions
-- Nesting
 - Texas punnery
+- more to come as I figure this out...
 
-## Example Tasks
+<br>
 
-### Printing
+# Statements
 
-<table>
-<tr> <th>JavaScript</th><th>YALL*E</th>
-</tr>
-<tr>
-<td>
+<br>
+Yalle is equipped to do all your classic statements. Let's check 'em out...
+<br>
+<br>
 
-```
-console.log("Hello world!")    
-```
+## Variable Assignment
 
-</td>
-<td>
+Brand your variable assignments into your computer's innards by declarin' `brand`, tellin' YALLE what `type` of variable we're dealin' with, give it a name, assign it with `=`, then end your statement with a `;`.
 
 ```
-holler "Howdy world!"    
+brand int horseshoes = 10 ;
 ```
 
-</td>
-<tr>
-</table>
+<br>
 
-### Variable Assignment
+<br>
 
-Lassoes are for variables that yall might want to assign, then reassign. Brands are for constants that will forever be in the same herd.
+## Control Flow
 
-<table>
-<tr> 
-<th>
-JavaScript</th>
-<th>YALL*E</th><tr>
-</tr>
-<tr>
-<td>
+### Iffin Statements
+
+For conditionals, YALLE has `iffin` statements:
 
 ```
-let horseshoes = 10    
+iffin [condition] ~~{ block ; }"
 ```
 
-</td>
-<td>
+Blocks gets roped in by a swinging rope and a lasso loop `~~{}`
 
 ```
-lasso horseshoes = 10     
+~~{ block here ; }
 ```
 
-</td>
-</tr>
-<tr>
-<td>
+<br>
+
+### Otherwise Statements
+
+Iffin an iffin statement proves false and untrustworthy, and you want to follow it with something ELSE to do, use `otherwise`:
 
 ```
-const HERD = "Alamo"    
+iffin time == supper ~~{ wrastle beans;}
+otherwise ~~{ wrastle herd;}`
 ```
 
-</td>
-<td>
+<br>
+
+### While Statements
+
+"While" sounds good in a Texas drawl, so why fix something that ain't broken.
 
 ```
-lasso HERD = "Alamo"     
+while month < 9
+~~{guadalupe_river_toobin = true;}
 ```
 
-</td>
-</tr>
-</table>
+<br>
+
+### Breaks
+
+Break a till statement or any other process with a `whoa`
+
+```
+while picnic = true;
+    iffin frito_pies < 0 ~~{ whoa ;}
+```
+
+<br>
+
+## Return Statements
+
+In YALLE, we don't return things, we `wrastle` 'em up:
+
+```
+iffin horsehoes < horses * 4 ~~{wrastle more_horse_shoes()}
+```
+
+<br>
+
+## Print Statements
+
+To print in YALLE, just ask it to holler something out:
+
+```
+holler "Howdy world!"
+```
 
 ## Sample Programs
+
+Still working on these. Sorry!

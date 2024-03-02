@@ -1,0 +1,133 @@
+yalle {
+  Program = Decl+ | Stmt+
+  Decl = VarDecl | FunDecl | TypeDecl
+  VarDecl = let Type id "=" Exp ";"  -- with_init
+          | Type id ";"          -- without_init
+  TypeDecl = StructDecl | EnumDecl
+  StructDecl = struct id "{" ( access? (VarDecl|FunDecl|Constructor))* "}"
+  Constructor = ctor "(" Params ")" Block
+  EnumDecl = enum id "~~{" NonemptyListOf<id, ","> ","? "}"
+  FunDecl = Type id "(" Params ")" Block
+  Params = ListOf<Param, ",">
+  Param = Type id ("=" Exp)?
+  Block = "~~{" Stmt* "}"
+
+  
+  Type = Type "[" "]"    -- array
+       | Type "?"        -- optional
+       | id              -- id
+       | void            -- void
+ 
+
+  Stmt = VarDecl
+       | Assignment 
+       | CallStmt 
+       | IfStmt 
+       | WhileStmt 
+       | ForStmt
+       | ReturnStmt
+       | BreakStmt
+       | ContinueStmt
+       | TryStmt
+       | PrintStmt
+
+  Assignment = id "=" Exp ";" 
+  BreakStmt = break ";"
+  ContinueStmt = continue ";"
+  ReturnStmt =  return Exp ";"
+  CallStmt = Call ";"
+  ForStmt = for id in Exp Block
+  PrintStmt = "holler" "(" Exp ")" ";"
+
+  
+
+  WhileStmt = while Exp Block
+  IfStmt = if Exp Block else Block  -- with_else
+         | if Exp Block else IfStmt -- nested_if
+         | if Exp Block             -- plain_if
+  TryStmt = try Block Catch* Finally?
+  Catch = catch "(" Type_id id ")" Block
+  Finally = "finally" Block
+// !OFFICE HOURS how to make args optional?
+  Call = id "(" Args ")"
+  Args = ListOf<Exp, ",">
+
+  Exp  = "-" Primary  --negate
+     | "!" Primary  --not
+     | Exp0
+  Exp0 = Exp0 "||" Exp1  --or
+     | Exp1
+  Exp1 = Exp1 "&&" Exp2  --and
+     | Exp2
+  Exp2 = Exp3 relop Exp3  --compare
+     | Exp3
+  Exp3 = Exp3 ("+" | "-") Term --add
+     | Term
+  Term = Term ("*" | "/" | "%") Factor --mul
+     | Factor
+  Factor = Primary "**" Factor  -- power
+         | Primary
+  Primary = "(" Exp ")"              -- parens
+          | "[" NonemptyListOf<Exp, ","> "]" -- array
+          | ~num Primary "[" Exp "]" -- subscript
+          | ~num Primary "." id      -- member
+          | ~num Primary "?." id      -- unwrapmember
+          | Call
+          | id
+          | num
+          | null
+          | true
+          | false
+          | stringlit
+
+
+  relop = "<=" | "<" | ">=" | ">" | "==" | "!="
+  access = public | private
+  
+  return = "wrastle" ~idchar
+  struct = "struct" ~idchar
+  enum = "enum" ~idchar
+  while = "till" ~idchar
+  if = "iffin" ~idchar
+  else = "otherwise" ~idchar
+  switch = "switch" ~idchar
+  case = "case" ~idchar
+  default = "default" ~idchar
+  break = "whoa" ~idchar
+  continue = "continue" ~idchar
+  try = "try" ~idchar
+  catch = "catch" ~idchar
+  throw = "throw" ~idchar
+  repeat = "repeat" ~idchar
+  for = "for" ~idchar
+  void = "void" ~idchar
+  null = "null" ~idchar
+  true = "yeehaw" ~idchar
+  false = "naw" ~idchar
+  in = "in" ~idchar
+  ctor = "constructor" ~idchar
+  public = "public" ~idchar
+  private = "private" ~idchar
+  print = "print" ~idchar
+  let = "brand" ~idchar
+  keyword = struct | enum | while | if | else
+          | switch | case | default | in
+          | return | break | continue
+          | try | catch | throw | repeat
+          | for | void | null | true | false | let
+  id = ~keyword letter idchar*
+  idchar = alnum | "_"
+  num = digit+ ("." digit+)? (("e" | "E") ("+" | "-")? digit+)?
+
+  stringlit = "\"" char* "\"" | "\'" char* "\'"
+  char = "\\u{" hexDigit+ "}"   --codepoint
+       | "\\" any               --nonbackslash
+       | ~"\"" any
+       
+  space += "//" (~"\n" any)*  --comment
+}
+
+// FUTURE adds, questions for Toal
+// Texas ternary?
+// for loops?
+// Func calls aren not in here right? 
