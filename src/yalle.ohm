@@ -1,133 +1,90 @@
 yalle {
-  Program = Decl+ | Stmt+
-  Decl = VarDecl | FunDecl | TypeDecl
-  VarDecl = let Type id "=" Exp ";"  -- with_init
-          | Type id ";"          -- without_init
-  TypeDecl = StructDecl | EnumDecl
-  StructDecl = struct id "{" ( access? (VarDecl|FunDecl|Constructor))* "}"
-  Constructor = ctor "(" Params ")" Block
-  EnumDecl = enum id "~~{" NonemptyListOf<id, ","> ","? "}"
-  FunDecl = Type id "(" Params ")" Block
-  Params = ListOf<Param, ",">
-  Param = Type id ("=" Exp)?
-  Block = "~~{" Stmt* "}"
+    Program     = Statement+
 
-  
-  Type = Type "[" "]"    -- array
-       | Type "?"        -- optional
-       | id              -- id
-       | void            -- void
- 
+    Statement   = VarDecl
+                | TypeDecl
+                | FunDecl
+                | Exp7 "=" Exp ";"                              --assign
+                | break ";"                                     --break
+                | return Exp ";"                                --return
+                | return ";"                                    --shortreturn
+                | IfStmt
+                | LoopStmt
+                | print Exp ";"                                 --print
+    // changes vs Carlos (to correct for in analyzer)
+    // - VarDecl has VarType
+    VarDecl     = let VarType id "-=" Exp ";"
+    TypeDecl    = struct id "-x-x-x-x-" Field* "-x-x-x-x-"
+    Field       = "|" id ":" Type "|"
+    FunDecl     = function id Params (":" Type)? Block
+    Params      = "(" ListOf<Param, ","> ")"
+    Param       = id ":" Type
+    Type        = "[" Type "]"                                  --array
+                | "(" ListOf<Type, ","> ")" "->" Type           --function
+                | id                                            --id
+    VarType     = id
+    IfStmt      = if Exp Block else Block                       --long
+                | if Exp Block else IfStmt                      --elsif
+                | if Exp Block                                  --short
+    LoopStmt    = while Exp Block                               --while
+                | repeat Exp Block                              --repeat
+                // Lose this one? Not sure what it means
+                | for id in Exp Block                           --collection
+    Block       = "~~{" Statement* "}"
 
-  Stmt = VarDecl
-       | Assignment 
-       | CallStmt 
-       | IfStmt 
-       | WhileStmt 
-       | ForStmt
-       | ReturnStmt
-       | BreakStmt
-       | ContinueStmt
-       | TryStmt
-       | PrintStmt
+    Exp         = Exp1 "?" Exp1 ":" Exp                         --conditional
+                | Exp1
+    Exp1        = Exp2 ("||" Exp2)+                             --or
+                | Exp2 ("&&" Exp2)+                             --and
+                | Exp2
+    Exp2        = Exp3 ("<="|"<"|"=="|"!="|">="|">") Exp3       --compare
+                | Exp3
+    Exp3        = Exp3 ("<<" | ">>") Exp4                       --shift
+                | Exp4
+    Exp4        = Exp4 ("+" | "-") Exp5                         --add
+                | Exp5
+    Exp5        = Exp5 ("*"| "/" | "%") Exp6                    --multiply
+                | Exp6
+    Exp6        = Exp7 "**" Exp6                                --power
+                | Exp7
+                | ("#" | "-" | "!" ) Exp7        --unary
+    Exp7        = true ~mut
+                | false ~mut
+                | floatlit ~mut
+                | intlit ~mut
+                | stringlit ~mut
+                | Exp7 ("(" | "?(") ListOf<Exp, ","> ")" ~mut   --call
+                | Exp7 ("[" | "?[") Exp "]"                     --subscript
+                | Exp7 ("." | "?.") id                          --member
+                | id                                            --id
+                | Type_array "(" ")" ~mut                       --emptyarray
+                | "[" NonemptyListOf<Exp, ","> "]" ~mut         --arrayexp
+                | "(" Exp ")" ~mut                              --parens
 
-  Assignment = id "=" Exp ";" 
-  BreakStmt = break ";"
-  ContinueStmt = continue ";"
-  ReturnStmt =  return Exp ";"
-  CallStmt = Call ";"
-  ForStmt = for id in Exp Block
-  PrintStmt = "holler" "(" Exp ")" ";"
+    intlit      = digit+
+    floatlit    = digit+ "." digit+ (("E" | "e") ("+" | "-")? digit+)?
+    stringlit   = "\"" char* "\""
+    char        = ~"\\" ~"\"" any
+                | "\\" ("n" | "t" | "\"" | "\\")                --escape
+    mut         = ~"==" "=" | "++" | "--"
 
-  
+    let         = "brand" ~alnum
+    struct      = "ranch" ~alnum
+    function    = "task" ~alnum
+    if          = "iffin" ~alnum
+    else        = "else" ~alnum
+    while       = "otherwise" ~alnum
+    repeat      = "repeat" ~alnum
+    for         = "for" ~alnum
+    in          = "in" ~alnum
+    break       = "whoa" ~alnum
+    print       = "holler" ~alnum
+    return      = "roundup" ~alnum
+    true        = "true" ~alnum
+    false       = "false" ~alnum
+    keyword     = let | struct | function | if | else | while | repeat
+                | for | in | break | return | true | false
+    id          = ~keyword letter alnum*
 
-  WhileStmt = while Exp Block
-  IfStmt = if Exp Block else Block  -- with_else
-         | if Exp Block else IfStmt -- nested_if
-         | if Exp Block             -- plain_if
-  TryStmt = try Block Catch* Finally?
-  Catch = catch "(" Type_id id ")" Block
-  Finally = "finally" Block
-// !OFFICE HOURS how to make args optional?
-  Call = id "(" Args ")"
-  Args = ListOf<Exp, ",">
-
-  Exp  = "-" Primary  --negate
-     | "!" Primary  --not
-     | Exp0
-  Exp0 = Exp0 "||" Exp1  --or
-     | Exp1
-  Exp1 = Exp1 "&&" Exp2  --and
-     | Exp2
-  Exp2 = Exp3 relop Exp3  --compare
-     | Exp3
-  Exp3 = Exp3 ("+" | "-") Term --add
-     | Term
-  Term = Term ("*" | "/" | "%") Factor --mul
-     | Factor
-  Factor = Primary "**" Factor  -- power
-         | Primary
-  Primary = "(" Exp ")"              -- parens
-          | "[" NonemptyListOf<Exp, ","> "]" -- array
-          | ~num Primary "[" Exp "]" -- subscript
-          | ~num Primary "." id      -- member
-          | ~num Primary "?." id      -- unwrapmember
-          | Call
-          | id
-          | num
-          | null
-          | true
-          | false
-          | stringlit
-
-
-  relop = "<=" | "<" | ">=" | ">" | "==" | "!="
-  access = public | private
-  
-  return = "wrastle" ~idchar
-  struct = "struct" ~idchar
-  enum = "enum" ~idchar
-  while = "till" ~idchar
-  if = "iffin" ~idchar
-  else = "otherwise" ~idchar
-  switch = "switch" ~idchar
-  case = "case" ~idchar
-  default = "default" ~idchar
-  break = "whoa" ~idchar
-  continue = "continue" ~idchar
-  try = "try" ~idchar
-  catch = "catch" ~idchar
-  throw = "throw" ~idchar
-  repeat = "repeat" ~idchar
-  for = "for" ~idchar
-  void = "void" ~idchar
-  null = "null" ~idchar
-  true = "yeehaw" ~idchar
-  false = "naw" ~idchar
-  in = "in" ~idchar
-  ctor = "constructor" ~idchar
-  public = "public" ~idchar
-  private = "private" ~idchar
-  print = "print" ~idchar
-  let = "brand" ~idchar
-  keyword = struct | enum | while | if | else
-          | switch | case | default | in
-          | return | break | continue
-          | try | catch | throw | repeat
-          | for | void | null | true | false | let
-  id = ~keyword letter idchar*
-  idchar = alnum | "_"
-  num = digit+ ("." digit+)? (("e" | "E") ("+" | "-")? digit+)?
-
-  stringlit = "\"" char* "\"" | "\'" char* "\'"
-  char = "\\u{" hexDigit+ "}"   --codepoint
-       | "\\" any               --nonbackslash
-       | ~"\"" any
-       
-  space += "//" (~"\n" any)*  --comment
+    space      += "//" (~"\n" any)*                             --comment
 }
-
-// FUTURE adds, questions for Toal
-// Texas ternary?
-// for loops?
-// Func calls aren not in here right? 

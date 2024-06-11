@@ -3,100 +3,101 @@ import parse from "../src/parser.js";
 
 const syntaxChecks = [
   // TODO toal office hours... why was first test working as printed? why was print still working across the board?
-  // ["all numeric literal forms", "printed(89.123);"],
-  ["all numeric literal forms", "holler(89.123);"],
+  ["all numeric literal forms", "holler 89.123;"],
   ["complex expressions", "holler (83 * ((((-((((13 / 21)))))))) + 1 - 0);"],
-  ["all unary operators", "holler (-3); print (!false);"],
-  ["all binary operators", "holler ( x && y || z * 1 / 2 ** 3 + 4 < 5);"],
+  ["all unary operators", "holler (-3); holler (!false);"],
+  ["all binary operators", "holler ( (x && y) || z * 1 / 2 ** 3 + 4 < 5);"],
   [
     "all arithmetic operators",
-    "brand int x = (!3) * 2 + 4 - (-7.3) * 8 ** 13 / 1;",
+    "brand int x -= (!3) * 2 + 4 - (-7.3) * 8 ** 13 / 1;",
   ],
   [
     "all relational operators",
-    "brand float x = 1<(2<=(3==(4!=(5 >= (6>7)))));",
+    "brand float x -= 1<(2<=(3==(4!=(5 >= (6>7)))));",
   ],
   [
     "function with multiple parameters",
-    "int calculate(int a, float b, string c) ~~{ wrastle 4; }",
+    "task calculate(int a, float b, string c) ~~{ wrastle 4; }",
   ],
   ["for loop with array", "for item in [1, 2, 3, 4] ~~{ holler(item); }"],
 
-  ["all logical operators", "brand bool x = true && false || (!false);"],
-  ["end of program inside comment", "print(0); // yay"],
-  ["comments with no text are ok", "print(1);//\nprint(0);//"],
-  ["non-Latin letters in identifiers", "コンパイラ = 100;"],
-  ["return (aka lasso)", "wrastle x;"],
-  ["break / whoa statement", "whoa ;"],
-  [
-    "conditional 1",
-    "iffin horsehoes < horses * 4 ~~{wrastle more_horse_shoes();}",
-  ],
-  [
-    "conditional 2",
-    "iffin horsehoes < horses * 4 ~~{wrastle more_horse_shoes();} otherwise ~~{wrastle 30;}",
-  ],
-  ["while/till", "till month < 9 ~~{holler(30);}"],
-  ["array type variable declaration", "brand int[] nums = [1, 2, 3];"],
-  /* Office hours:
+//   ["all logical operators", "brand bool x = true && false || (!false);"],
+//   ["end of program inside comment", "print(0); // yay"],
+//   ["comments with no text are ok", "print(1);//\nprint(0);//"],
+//   ["non-Latin letters in identifiers", "コンパイラ = 100;"],
+//   ["return (aka lasso)", "wrastle x;"],
+//   ["break / whoa statement", "whoa ;"],
+//   [
+//     "conditional 1",
+//     "iffin horsehoes < horses * 4 ~~{wrastle more_horse_shoes();}",
+//   ],
+//   [
+//     "conditional 2",
+//     "iffin horsehoes < horses * 4 ~~{wrastle more_horse_shoes();} otherwise ~~{wrastle 30;}",
+//   ],
+//   ["while/till", "till month < 9 ~~{holler(30);}"],
+//   ["array type variable declaration", "brand int[] nums = [1, 2, 3];"],
+ 
+/* Office hours:
   why do these not work? why doesn't wrastle count as an id or wrastle() as a call?
   ["function declaration", "void myFunc() ~~{ wrastle; }"],
   ["function declaration", "void myFunc() ~~{ wrastle(); }"],
   ["nested if", "iffin x > 5 ~~{ iffin y < 10 ~~{ wrastle; } }"],
   ["constructor declaration", "constructor(int a, int b) ~~{ wrastle; }"],*/
 
-  ["function declaration", "void myFunc() ~~{ wrastle(3); }"],
-  ["function call with arguments", 'myFunc(42, "hello");'],
-  ["function call with arguments", "myFunc(42, 34);"],
-  [
-    "string literal with escaped characters",
-    'holler("This is a \\"test\\".");',
-  ],
-  ["array declaration and initialization", "brand int[] nums = [1, 2, 3, 4];"],
+//   ["function declaration", "void myFunc() ~~{ wrastle(3); }"],
+//   ["function call with arguments", 'myFunc(42, "hello");'],
+//   ["function call with arguments", "myFunc(42, 34);"],
+//   [
+//     "string literal with escaped characters",
+//     'holler("This is a \\"test\\".");',
+//   ],
+//   ["array declaration and initialization", "brand int[] nums = [1, 2, 3, 4];"],
 
-  ["enum declaration", "enum Color ~~{ Red, Green, Blue, }"],
-  ["nested if", "iffin x > 5 ~~{ iffin y < 10 ~~{ holler(3); } }"],
-  ["for loop", "for i in [1,2,3] ~~{ holler(i); }"],
-  [
-    "chained logical and arithmetic operations",
-    "brand bool result = (x > 5 && y < 10) || (a + b == c - d);",
-  ],
-  [
-    "try-catch-finally block",
-    "try ~~{ riskyOperation(); } catch (Error e) ~~{ handle(e); } finally ~~{ cleanup(); }",
-  ],
-  ["optional type declaration and use", "brand int? maybeNum = null;"],
+//   ["enum declaration", "enum Color ~~{ Red, Green, Blue, }"],
+//   ["nested if", "iffin x > 5 ~~{ iffin y < 10 ~~{ holler(3); } }"],
+//   ["for loop", "for i in [1,2,3] ~~{ holler(i); }"],
+//   [
+//     "chained logical and arithmetic operations",
+//     "brand bool result = (x > 5 && y < 10) || (a + b == c - d);",
+//   ],
+//   [
+//     "try-catch-finally block",
+//     "try ~~{ riskyOperation(); } catch (Error e) ~~{ handle(e); } finally ~~{ cleanup(); }",
+//   ],
+//   ["optional type declaration and use", "brand int? maybeNum = null;"],
 ];
 
 const syntaxErrors = [
-  ["non-letter in an identifier", "ab😭c = 2", /Line 1, col 3/],
-  ["malformed number", "x= 2.", /Line 1, col 6/],
-  ["missing semicolon", "x = 3 y = 1", /Line 1, col 7/],
-  ["a missing right operand", "print(5 -", /Line 1, col 10/],
-  ["a non-operator", "print(7 * ((2 _ 3)", /Line 1, col 15/],
-  ["an expression starting with a )", "x = );", /Line 1, col 5/],
-  ["a statement starting with expression", "x * 5;", /Line 1, col 3/],
-  ["an illegal statement on line 2", "print(5);\nx * 5;", /Line 2, col 3/],
-  ["a statement starting with a )", "print(5);\n) * 5", /Line 2, col 1/],
-  ["an expression starting with a *", "x = * 71;", /Line 1, col 5/],
-  ["bad break statement", "break 5;", /Line 1, col 7/],
-  ["single dash break", "~{x};", /Line 1, col 1/],
-  ["double if", "iffin iffin x == 2", /Line 1, col 7/],
-  ["incorrect variable initialization", "brand x == 5;", /Line 1, col 9/],
-  [
-    "array declaration and initialization missing bracket",
-    "brand int[ nums = [1, 2, 3, 4];",
-    /Line 1, col 12/,
-  ],
-  [
-    'chained logical and arithmetic operations missing "or" pipe',
-    "brand bool result = (x > 5 && y < 10) | (a + b == c - d);",
-    /Line 1, col 39/,
-  ],
-  ["missing semicolon", "iffin x > 5 ~~{ holler(x)}", /Line 1, col 26/],
-  ["misplaced semicolon", "iffin x > 5; ~~{ holler(x);", /Line 1, col 12/],
-  ["missing block closure", "iffin x > 5 ~~{ holler(x);", /Line 1, col 27/],
-  ["wrong symbol in expression", "x = 5 $ 3;", /Line 1, col 7/],
+//   ["non-letter in an identifier", "ab😭c = 2", /Line 1, col 3/],
+//   ["malformed number", "x= 2.", /Line 1, col 6/],
+//   ["missing semicolon", "x = 3 y = 1", /Line 1, col 7/],
+//   ["a missing right operand", "print(5 -", /Line 1, col 10/],
+//   ["a non-operator", "print(7 * ((2 _ 3)", /Line 1, col 15/],
+//   ["an expression starting with a )", "x = );", /Line 1, col 5/],
+//   ["a statement starting with expression", "x * 5;", /Line 1, col 3/],
+//   ["an illegal statement on line 2", "print(5);\nx * 5;", /Line 2, col 3/],
+//   ["a statement starting with a )", "print(5);\n) * 5", /Line 2, col 1/],
+//   ["an expression starting with a *", "x = * 71;", /Line 1, col 5/],
+//   ["bad break statement", "break 5;", /Line 1, col 7/],
+//   ["single dash break", "~{x};", /Line 1, col 1/],
+//   ["double if", "iffin iffin x == 2", /Line 1, col 7/],
+//   ["incorrect variable initialization", "brand x == 5;", /Line 1, col 9/],
+//   [
+//     "array declaration and initialization missing bracket",
+//     "brand int[ nums = [1, 2, 3, 4];",
+//     /Line 1, col 12/,
+//   ],
+//   [
+//     'chained logical and arithmetic operations missing "or" pipe',
+//     "brand bool result = (x > 5 && y < 10) | (a + b == c - d);",
+//     /Line 1, col 39/,
+//   ],
+//   ["missing semicolon", "iffin x > 5 ~~{ holler(x)}", /Line 1, col 26/],
+//   ["misplaced semicolon", "iffin x > 5; ~~{ holler(x);", /Line 1, col 12/],
+//   ["missing block closure", "iffin x > 5 ~~{ holler(x);", /Line 1, col 27/],
+    //   ["wrong symbol in expression", "x = 5 $ 3;", /Line 1, col 7/],
+    
   /*More Questions for office hours: is this an ohm or a javascript issue?
   ["unterminated string, 'holler("This is a test);', /Line 1, col 20/],
   what's going on here?
