@@ -4,21 +4,23 @@ yalle {
     Statement   = VarDecl
                 | TypeDecl
                 | FunDecl
-                | Exp7 "=" Exp ";"                              --assign
+                | print Exp ";"                                 --print
+                | Exp8 "-=" Exp ";"                              --assign
+                | Exp8_call ";"                                  --call
                 | break ";"                                     --break
                 | return Exp ";"                                --return
                 | return ";"                                    --shortreturn
                 | IfStmt
                 | LoopStmt
-                | print Exp ";"                                 --print
     // changes vs Carlos (to correct for in analyzer)
-    // - VarDecl has VarType
-    VarDecl     = let VarType id "-=" Exp ";"
+    // - VarDecl has Type
+    // Params are Python style vs Carlos style
+    VarDecl     = let Type id "-=" Exp ";"
     TypeDecl    = struct id "-x-x-x-x-" Field* "-x-x-x-x-"
     Field       = "|" id ":" Type "|"
     FunDecl     = function id Params (":" Type)? Block
     Params      = "(" ListOf<Param, ","> ")"
-    Param       = id ":" Type
+    Param       = Type id
     Type        = "[" Type "]"                                  --array
                 | "(" ListOf<Type, ","> ")" "->" Type           --function
                 | id                                            --id
@@ -34,28 +36,32 @@ yalle {
 
     Exp         = Exp1 "?" Exp1 ":" Exp                         --conditional
                 | Exp1
-    Exp1        = Exp2 ("||" Exp2)+                             --or
-                | Exp2 ("&&" Exp2)+                             --and
+    // this will be left associative
+    Exp1        = Exp1 "||" Exp2                             --or                             
                 | Exp2
-    Exp2        = Exp3 ("<="|"<"|"=="|"!="|">="|">") Exp3       --compare
+    Exp2        = Exp2 "&&" Exp3                             --and
                 | Exp3
-    Exp3        = Exp3 ("<<" | ">>") Exp4                       --shift
+    // non associative            
+    Exp3        = Exp4 ("<="|"<"|"=="|"!="|">="|">") Exp4       --compare
                 | Exp4
-    Exp4        = Exp4 ("+" | "-") Exp5                         --add
+    Exp4        = Exp4 ("<<" | ">>") Exp5                       --shift
                 | Exp5
-    Exp5        = Exp5 ("*"| "/" | "%") Exp6                    --multiply
+    Exp5        = Exp5 ("+" | "-") Exp6                         --add
                 | Exp6
-    Exp6        = Exp7 "**" Exp6                                --power
+    Exp6        = Exp6 ("*"| "/" | "%") Exp7                    --multiply
                 | Exp7
-                | ("#" | "-" | "!" ) Exp7        --unary
-    Exp7        = true ~mut
+    Exp7        = Exp8 "**" Exp7                                --power
+                | Exp8
+                | ("#" | "-" | "!" ) Exp8        --unary
+    Exp8        = true ~mut
                 | false ~mut
                 | floatlit ~mut
                 | intlit ~mut
                 | stringlit ~mut
-                | Exp7 ("(" | "?(") ListOf<Exp, ","> ")" ~mut   --call
-                | Exp7 ("[" | "?[") Exp "]"                     --subscript
-                | Exp7 ("." | "?.") id                          --member
+                | Exp8 ("(" | "?(") ListOf<Exp, ","> ")" ~mut   --call
+                // loosing ? stuff for now
+                // | Exp7 ("[" | "?[") Exp "]"                     --subscript
+                // | Exp7 ("." | "?.") id                          --member
                 | id                                            --id
                 | Type_array "(" ")" ~mut                       --emptyarray
                 | "[" NonemptyListOf<Exp, ","> "]" ~mut         --arrayexp
@@ -72,8 +78,8 @@ yalle {
     struct      = "ranch" ~alnum
     function    = "task" ~alnum
     if          = "iffin" ~alnum
-    else        = "else" ~alnum
-    while       = "otherwise" ~alnum
+    else        = "otherwise" ~alnum
+    while       = "till" ~alnum
     repeat      = "repeat" ~alnum
     for         = "for" ~alnum
     in          = "in" ~alnum
