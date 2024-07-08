@@ -15,3 +15,4 @@ export default function compile(source, outputType) {
   if (outputType === "optimized") return optimized;
   return generate(optimized);
 }
+ 

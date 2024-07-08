@@ -15,3 +15,4 @@ if (process.argv.length !== 3) {
     console.error(`\u001b[31m${e}\u001b[39m`);
   }
 }
+

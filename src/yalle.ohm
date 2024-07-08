@@ -65,6 +65,7 @@ yalle {
                 | id                                            --id
                 | Type_array "(" ")" ~mut                       --emptyarray
                 | "[" NonemptyListOf<Exp, ","> "]" ~mut         --arrayexp
+                // ! TODO - need to double check what parens do here,  3/13 associativity lecture
                 | "(" Exp ")" ~mut                              --parens
 
     intlit      = digit+

@@ -9,8 +9,7 @@ ranch King_Ranch
 
 copy:
 
-Normally in Texas, we're opposed to fencing people in, but when it comes to structs, you gotta corral your variables with enough length of barbed wire ("-x-x-x-") and wall 'em in on the sides ("|"). Sure, maybe it's a tad tedious, but what's wrong with giving a little geography 
-
+Normally in Texas, we're opposed to fencing people in, but when it comes to structs, you gotta corral your variables with enough length of barbed wire ("-x-x-x-") and wall 'em in on the sides ("|"). Sure, maybe it's a tad tedious, but also kind of fun to think of objects as actual roped off land objects.
 FUNCTION
 
 task gcd(): string {
