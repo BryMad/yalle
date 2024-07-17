@@ -4,6 +4,9 @@ import * as fs from "node:fs/promises"
 import stringify from "graph-stringify"
 import compile from "./compiler.js"
 
+// import parse from "./parser.js"
+// import analyze from "./analyzer.js"
+
 const help = `Yalle compiler
 
 Syntax: yalle <filename> <outputType>
@@ -20,7 +23,11 @@ async function compileFromFile(filename, outputType) {
   try {
     const buffer = await fs.readFile(filename)
     const compiled = compile(buffer.toString(), outputType)
-    console.log(stringify(compiled, "kind") || compiled)
+      console.log(stringify(compiled, "kind") || compiled)
+    //   const match = parse("brand int fart -= 8 ;")
+    //   const rep = analyze(match)
+    //   console.log(util.inspect(rep, { depth: 5 }))
+      
   } catch (e) {
     console.error(`\u001b[31m${e}\u001b[39m`)
     process.exitCode = 1

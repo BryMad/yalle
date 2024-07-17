@@ -23,12 +23,9 @@ export function typeDeclaration(type) {
 export const boolType = { kind: "BoolType" }
 export const intType = { kind: "IntType" }
 export const floatType = { kind: "FloatType" }
-export const stringType = { kind: "StringType" }
-
-
-// Carlos CUT
-// export const voidType = { kind: "VoidType" }
-// export const anyType = { kind: "AnyType" }
+export const stringType = { kind: "StringType" } 
+export const voidType = { kind: "VoidType" }
+export const anyType = { kind: "AnyType" }
 
 export function structType(name, fields) {
   return { kind: "StructType", name, fields }
@@ -55,17 +52,17 @@ export function functionType(paramTypes, returnType) {
   return { kind: "FunctionType", paramTypes, returnType }
 }
 
-// export function optionalType(baseType) {
-//   return { kind: "OptionalType", baseType }
-// }
+export function optionalType(baseType) {
+  return { kind: "OptionalType", baseType }
+}
 
-// export function increment(variable) {
-//   return { kind: "Increment", variable }
-// }
+export function increment(variable) {
+  return { kind: "Increment", variable }
+}
 
-// export function decrement(variable) {
-//   return { kind: "Decrement", variable }
-// }
+export function decrement(variable) {
+  return { kind: "Decrement", variable }
+}
 
 export function assignment(target, source) {
   return { kind: "Assignment", target, source }
@@ -118,13 +115,13 @@ export function unary(op, operand, type) {
   return { kind: "UnaryExpression", op, operand, type }
 }
 
-// export function emptyOptional(baseType) {
-//   return { kind: "EmptyOptional", baseType, type: optionalType(baseType) }
-// }
+export function emptyOptional(baseType) {
+  return { kind: "EmptyOptional", baseType, type: optionalType(baseType) }
+}
 
-// export function subscript(array, index) {
-//   return { kind: "SubscriptExpression", array, index, type: array.type.baseType }
-// }
+export function subscript(array, index) {
+  return { kind: "SubscriptExpression", array, index, type: array.type.baseType }
+}
 
 export function arrayExpression(elements) {
   return { kind: "ArrayExpression", elements, type: arrayType(elements[0].type) }
@@ -164,7 +161,8 @@ export const standardLibrary = Object.freeze({
   string: stringType,
   void: voidType,
   any: anyType,
-  π: variable("π", true, floatType),
+    π: variable("π", true, floatType),
+  // TODO is this print?? or specific to voids?
   print: fun("print", anyToVoidType),
   sin: fun("sin", floatToFloatType),
   cos: fun("cos", floatToFloatType),

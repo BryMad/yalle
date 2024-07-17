@@ -4,24 +4,27 @@ yalle {
     Statement   = VarDecl
                 | TypeDecl
                 | FunDecl
+                // Bmup removed from Carlos
+                // Print Added
                 | print Exp ";"                                 --print
-                | Exp8 "-=" Exp ";"                              --assign
-                | Exp8_call ";"                                  --call
+                // TODO how is this assign different from VarDelc?
+                | Exp9 "-=" Exp ";"                              --assign
+                | Exp9_call ";"                                  --call
                 | break ";"                                     --break
                 | return Exp ";"                                --return
                 | return ";"                                    --shortreturn
                 | IfStmt
                 | LoopStmt
-    // changes vs Carlos (to correct for in analyzer)
-    // - VarDecl has Type
-    // Params are Python style vs Carlos style
+    // CHANGE: vardecl has type
     VarDecl     = let Type id "-=" Exp ";"
     TypeDecl    = struct id "-x-x-x-x-" Field* "-x-x-x-x-"
     Field       = "|" id ":" Type "|"
     FunDecl     = function id Params (":" Type)? Block
     Params      = "(" ListOf<Param, ","> ")"
     Param       = Type id
-    Type        = "[" Type "]"                                  --array
+  
+    Type        = Type "?"                                      --optional
+                | "[" Type "]"                                  --array
                 | "(" ListOf<Type, ","> ")" "->" Type           --function
                 | id                                            --id
     IfStmt      = if Exp Block else Block                       --long
@@ -29,38 +32,41 @@ yalle {
                 | if Exp Block                                  --short
     LoopStmt    = while Exp Block                               --while
                 | repeat Exp Block                              --repeat
-                // Lose this one? Not sure what it means
+                // Carlos cut for ID in Exp -range
                 | for id in Exp Block                           --collection
     Block       = "~~{" Statement* "}"
 
     Exp         = Exp1 "?" Exp1 ":" Exp                         --conditional
                 | Exp1
-    // this will be left associative
-    Exp1        = Exp1 "||" Exp2                             --or                             
-                | Exp2
-    Exp2        = Exp2 "&&" Exp3                             --and
+  
+    Exp1        = Exp1 "??" Exp2                                --unwrapelse
+              | Exp2
+    // CARLOS change - || and && becomes left associative
+    Exp2        = Exp2 "||" Exp3                             --or                             
                 | Exp3
-    // non associative            
-    Exp3        = Exp4 ("<="|"<"|"=="|"!="|">="|">") Exp4       --compare
+    Exp3        = Exp3 "&&" Exp4                             --and
                 | Exp4
-    Exp4        = Exp4 ("<<" | ">>") Exp5                       --shift
+    // non associative            
+    Exp4        = Exp5 ("<="|"<"|"=="|"!="|">="|">") Exp5       --compare
                 | Exp5
-    Exp5        = Exp5 ("+" | "-") Exp6                         --add
+    Exp5        = Exp5 ("<<" | ">>") Exp6                       --shift
                 | Exp6
-    Exp6        = Exp6 ("*"| "/" | "%") Exp7                    --multiply
+    Exp6        = Exp6 ("+" | "-") Exp7                         --add
                 | Exp7
-    Exp7        = Exp8 "**" Exp7                                --power
+    Exp7        = Exp7 ("*"| "/" | "%") Exp8                    --multiply
                 | Exp8
+    Exp8        = Exp9 "**" Exp8                                --power
+                | Exp9
                 | ("#" | "-" | "!" ) Exp8        --unary
-    Exp8        = true ~mut
+    Exp9        = true ~mut
                 | false ~mut
                 | floatlit ~mut
                 | intlit ~mut
+                | no Type ~mut                                  --emptyopt
                 | stringlit ~mut
-                | Exp8 ("(" | "?(") ListOf<Exp, ","> ")" ~mut   --call
-                // loosing ? stuff for now
-                // | Exp7 ("[" | "?[") Exp "]"                     --subscript
-                // | Exp7 ("." | "?.") id                          --member
+                | Exp9 ("(" | "?(") ListOf<Exp, ","> ")" ~mut   --call
+                | Exp9 ("[" | "?[") Exp "]"                     --subscript
+                | Exp9 ("." | "?.") id                          --member
                 | id                                            --id
                 | Type_array "(" ")" ~mut                       --emptyarray
                 | "[" NonemptyListOf<Exp, ","> "]" ~mut         --arrayexp
@@ -82,10 +88,13 @@ yalle {
     while       = "till" ~alnum
     repeat      = "repeat" ~alnum
     for         = "for" ~alnum
+    random      = "random" ~alnum
     in          = "in" ~alnum
     break       = "whoa" ~alnum
     print       = "holler" ~alnum
     return      = "roundup" ~alnum
+    some        = "some" ~alnum
+    no          = "no" ~alnum
     true        = "true" ~alnum
     false       = "false" ~alnum
     keyword     = let | struct | function | if | else | while | repeat

@@ -78,7 +78,8 @@ export default function analyze(match) {
     must(entity, `Identifier ${name} not declared`, at)
   }
 
-  function mustHaveNumericType(e, at) {
+    function mustHaveNumericType(e, at) {
+        console.log(`Checking numeric type for expression: ${JSON.stringify(e)}, at: ${at}`);
     must([INT, FLOAT].includes(e.type), "Expected a number", at)
   }
 
@@ -233,7 +234,7 @@ export default function analyze(match) {
   function mustBeInLoop(at) {
     must(context.inLoop, "Break can only appear in a loop", at)
   }
-
+// tODO figure out why this
   function mustBeInAFunction(at) {
     must(context.function, "Return can only appear in a function", at)
   }
@@ -275,9 +276,10 @@ export default function analyze(match) {
     },
 
     VarDecl(_let, type, id, _brand, exp, _semicolon) {
-      const initializer = exp.rep()
-      const readOnly = modifier.sourceString === "const"
-      const variable = core.variable(id.sourceString, readOnly, initializer.type)
+        const initializer = exp.rep()
+        // TODO get rid of const/let
+    //   const readOnly = modifier.sourceString === "const"
+      const variable = core.variable(id.sourceString, initializer.type)
       mustNotAlreadyBeDeclared(id.sourceString, { at: id })
       context.add(id.sourceString, variable)
       return core.variableDeclaration(variable, initializer)
@@ -309,12 +311,19 @@ export default function analyze(match) {
 
       // Parameters are part of the child context
       context = context.newChildContext({ inLoop: false, function: fun })
-      const params = parameters.rep()
+        const params = parameters.rep()
+        
+          params.forEach(param => {
+    console.log(`Function param type: ${JSON.stringify(param.type)}`)
+  })
 
       // Now that the parameters are known, we compute the function's type.
       // This is fine; we did not need the type to analyze the parameters,
       // but we do need to set it before analyzing the body.
-      const paramTypes = params.map(param => param.type)
+        const paramTypes = params.map(param => {
+            console.log(`Function param type: ${JSON.stringify(param.type)}`)
+            return param.type
+        })
       const returnType = type.children?.[0]?.rep() ?? VOID
       fun.type = core.functionType(paramTypes, returnType)
 
@@ -332,7 +341,10 @@ export default function analyze(match) {
     },
 
     // TODO: LOST type and ID
-    Param(type, id) {
+      Param(type, id) {
+          const paramType = type.rep()
+        console.log(`Declaring parameter ${id.sourceString} with type ${JSON.stringify(paramType)}`)
+
       const param = core.variable(id.sourceString, false, type.rep())
       mustNotAlreadyBeDeclared(param.name, { at: id })
       context.add(param.name, param)
@@ -340,9 +352,9 @@ export default function analyze(match) {
     },
 
      // * CUT from carlos
-    //Type_optional(baseType, _questionMark) {
-    //  return core.optionalType(baseType.rep())
-    //},
+    Type_optional(baseType, _questionMark) {
+     return core.optionalType(baseType.rep())
+    },
 
     Type_array(_left, baseType, _right) {
       return core.arrayType(baseType.rep())
@@ -428,10 +440,10 @@ export default function analyze(match) {
     // different from Carlos
     // Statement_bump(exp, operator, _semicolon) {
     //  const variable = exp.rep()
-     // mustHaveIntegerType(variable, { at: exp })
+    //  mustHaveIntegerType(variable, { at: exp })
     //  return operator.sourceString === "++"
-     //   ? core.increment(variable)
-     //   : core.decrement(variable)
+    //    ? core.increment(variable)
+    //    : core.decrement(variable)
     // },
 
     Statement_assign(variable, _brand, expression, _semicolon) {
@@ -451,7 +463,8 @@ export default function analyze(match) {
       return core.breakStatement
     },
 
-    Statement_return(returnKeyword, exp, _semicolon) {
+      Statement_return(returnKeyword, exp, _semicolon) {
+        // TODO bring this back
       mustBeInAFunction({ at: returnKeyword })
       mustReturnSomething(context.function, { at: returnKeyword })
       const returnExpression = exp.rep()
@@ -459,7 +472,8 @@ export default function analyze(match) {
       return core.returnStatement(returnExpression)
     },
 
-    Statement_shortreturn(returnKeyword, _semicolon) {
+      Statement_shortreturn(returnKeyword, _semicolon) {
+        // TODO bring this back
       mustBeInAFunction({ at: returnKeyword })
       mustNotReturnAnything(context.function, { at: returnKeyword })
       return core.shortReturnStatement()
@@ -474,14 +488,15 @@ export default function analyze(match) {
     },
 
     //      different from Carlos
-    //Exp1_unwrapelse(exp1, elseOp, exp2) {
-    //  const [optional, op, alternate] = [exp1.rep(), elseOp.sourceString, exp2.rep()]
-    //  mustHaveAnOptionalType(optional, { at: exp1 })
-    //  mustBeAssignable(alternate, { toType: optional.type.baseType }, { at: exp2 })
-    //  return core.binary(op, optional, alternate, optional.type)
-    // },
+    Exp1_unwrapelse(exp1, elseOp, exp2) {
+     const [optional, op, alternate] = [exp1.rep(), elseOp.sourceString, exp2.rep()]
+     mustHaveAnOptionalType(optional, { at: exp1 })
+     mustBeAssignable(alternate, { toType: optional.type.baseType }, { at: exp2 })
+     return core.binary(op, optional, alternate, optional.type)
+    },
 
-    Exp1_or(exp, _ops, exps) {
+    // TODO increment each EXP
+    Exp2_or(exp, _ops, exps) {
       let left = exp.rep()
       mustHaveBooleanType(left, { at: exp })
       for (let e of exps.children) {
@@ -492,7 +507,7 @@ export default function analyze(match) {
       return left
     },
 
-    Exp2_and(exp, _ops, exps) {
+    Exp3_and(exp, _ops, exps) {
       let left = exp.rep()
       mustHaveBooleanType(left, { at: exp })
       for (let e of exps.children) {
@@ -503,7 +518,7 @@ export default function analyze(match) {
       return left
     },
 
-    Exp3_compare(exp1, relop, exp2) {
+    Exp4_compare(exp1, relop, exp2) {
       const [left, op, right] = [exp1.rep(), relop.sourceString, exp2.rep()]
       // == and != can have any operand types as long as they are the same
       // But inequality operators can only be applied to numbers and strings
@@ -514,14 +529,14 @@ export default function analyze(match) {
       return core.binary(op, left, right, BOOLEAN)
     },
 
-    Exp4_shift(exp1, shiftOp, exp2) {
+    Exp5_shift(exp1, shiftOp, exp2) {
       const [left, op, right] = [exp1.rep(), shiftOp.sourceString, exp2.rep()]
       mustHaveIntegerType(left, { at: exp1 })
       mustHaveIntegerType(right, { at: exp2 })
       return core.binary(op, left, right, INT)
     },
 
-    Exp5_add(exp1, addOp, exp2) {
+    Exp6_add(exp1, addOp, exp2) {
       const [left, op, right] = [exp1.rep(), addOp.sourceString, exp2.rep()]
       if (op === "+") {
         mustHaveNumericOrStringType(left, { at: exp1 })
@@ -532,21 +547,21 @@ export default function analyze(match) {
       return core.binary(op, left, right, left.type)
     },
 
-    Exp6_multiply(exp1, mulOp, exp2) {
+    Exp7_multiply(exp1, mulOp, exp2) {
       const [left, op, right] = [exp1.rep(), mulOp.sourceString, exp2.rep()]
       mustHaveNumericType(left, { at: exp1 })
       mustBothHaveTheSameType(left, right, { at: mulOp })
       return core.binary(op, left, right, left.type)
     },
 
-    Exp7_power(exp1, powerOp, exp2) {
+    Exp8_power(exp1, powerOp, exp2) {
       const [left, op, right] = [exp1.rep(), powerOp.sourceString, exp2.rep()]
       mustHaveNumericType(left, { at: exp1 })
       mustBothHaveTheSameType(left, right, { at: powerOp })
       return core.binary(op, left, right, left.type)
     },
 
-    Exp7_unary(unaryOp, exp) {
+    Exp8_unary(unaryOp, exp) {
       const [op, operand] = [unaryOp.sourceString, exp.rep()]
       let type
       if (op === "#") {
@@ -560,12 +575,12 @@ export default function analyze(match) {
         type = BOOLEAN
       }
       
-    //   else if (op === "some") {
-    //     type = core.optionalType(operand.type)
-    //   } else if (op === "random") {
-    //     mustHaveAnArrayType(operand, { at: exp })
-    //     type = operand.type.baseType
-    //   }
+      else if (op === "some") {
+        type = core.optionalType(operand.type)
+      } else if (op === "random") {
+        mustHaveAnArrayType(operand, { at: exp })
+        type = operand.type.baseType
+      }
       return core.unary(op, operand, type)
     },
 

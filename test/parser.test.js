@@ -62,7 +62,8 @@ const syntaxChecks = [
     "brand bool result -= (x > 5 && y < 10) || (a + b == c - d);",
     ],
     ["struct declaration", "ranch RanchInfo -x-x-x-x- \n| acres: int |\n| cattle: int |\n-x-x-x-x-"],
-  ["struct initialized", "brand RanchInfo KingRanch -= RanchoInfo(825000, 35000);" ], 
+    ["struct initialized", "brand RanchInfo KingRanch -= RanchoInfo(825000, 35000);"], 
+  ["function works", "task calculateHorseshoes(int horses, int horseshoes) ~~{iffin horsehoes < horses * 4 ~~{roundup false;}}"]
   // ! TODO struct test
 //   [
 //     "try-catch-finally block",
