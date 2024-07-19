@@ -26,7 +26,8 @@ const syntaxChecks = [
   ["comments with no text are ok", "holler(1);//\nholler(0);//"],
   ["non-Latin letters in identifiers", "コンパイラ -= 100;"],
   ["return", "roundup x;"],
-  ["break / whoa statement", "whoa ;"],
+    ["break / whoa statement", "whoa ;"],
+  ["complex array types", "function f(x: [[[int?]]?]) ~~{}"],
   [
     "conditional 1",
     "iffin horsehoes < horses * 4 ~~{roundup moreHorseShoes();}",
