@@ -1,5 +1,5 @@
-task calculateHorseshoes(int horses, int horseshoes) ~~{
-    iffin horseshoes < horses * 4 ~~{roundup false;}
-    }
+task gcd(x: int, y: int): int ~~{
+  roundup y == 0 ? x : gcd(y, x % y);
+}
 
-holler(calculateHorseshoes(2,6));
+print(gcd(5023427, 920311));

@@ -6,6 +6,7 @@
 
 import * as core from "./core.js"
 
+// MARK: JS types 
 // A few declarations to save typing
 const INT = core.intType
 const FLOAT = core.floatType
@@ -14,6 +15,7 @@ const BOOLEAN = core.boolType
 const ANY = core.anyType
 const VOID = core.voidType
 
+// MARK: Context class
 class Context {
   // Like most statically-scoped languages, Carlos contexts will contain a
   // map for their locally declared identifiers and a reference to the parent
@@ -28,7 +30,7 @@ class Context {
     this.locals.set(name, entity)
   }
   lookup(name) {
-    return this.locals.get(name) ??  this.parent?.lookup(name)
+    return this.locals.get(name) || this.parent?.lookup(name)
   }
   static root() {
     return new Context({ locals: new Map(Object.entries(core.standardLibrary)) })
@@ -38,6 +40,7 @@ class Context {
   }
 }
 
+// MARK: ANALYZE FUNCTION 
 export default function analyze(match) {
   // Track the context manually via a simple variable. The initial context
   // contains the mappings from the standard library. Add to this context
@@ -52,6 +55,7 @@ export default function analyze(match) {
   // Ohm's getLineAndColumnMessage will be used to prefix the error message. This
   // allows any semantic analysis errors to be presented to an end user in the
   // same format as Ohm's reporting of syntax errors.
+  // MARK: Musts
   function must(condition, message, errorLocation) {
     if (!condition) {
       const prefix = errorLocation.at.source.getLineAndColumnMessage()
@@ -74,7 +78,8 @@ export default function analyze(match) {
     must(entity, `Identifier ${name} not declared`, at)
   }
 
-  function mustHaveNumericType(e, at) {
+    function mustHaveNumericType(e, at) {
+        console.log(`Checking numeric type for expression: ${JSON.stringify(e)}, at: ${at}`);
     must([INT, FLOAT].includes(e.type), "Expected a number", at)
   }
 
@@ -229,7 +234,7 @@ export default function analyze(match) {
   function mustBeInLoop(at) {
     must(context.inLoop, "Break can only appear in a loop", at)
   }
-
+// tODO figure out why this
   function mustBeInAFunction(at) {
     must(context.function, "Return can only appear in a function", at)
   }
@@ -256,6 +261,7 @@ export default function analyze(match) {
     must(argCount === paramCount, message, at)
   }
 
+  // MARK: BUILDER
   // Building the program representation will be done together with semantic
   // analysis and error checking. In Ohm, we do this with a semantics object
   // that has an operation for each relevant rule in the grammar. Since the
@@ -269,10 +275,11 @@ export default function analyze(match) {
       return core.program(statements.children.map(s => s.rep()))
     },
 
-    VarDecl(modifier, id, _eq, exp, _semicolon) {
-      const initializer = exp.rep()
-      const readOnly = modifier.sourceString === "const"
-      const variable = core.variable(id.sourceString, readOnly, initializer.type)
+    VarDecl(_let, type, id, _brand, exp, _semicolon) {
+        const initializer = exp.rep()
+        // TODO get rid of const/let
+    //   const readOnly = modifier.sourceString === "const"
+      const variable = core.variable(id.sourceString, initializer.type)
       mustNotAlreadyBeDeclared(id.sourceString, { at: id })
       context.add(id.sourceString, variable)
       return core.variableDeclaration(variable, initializer)
@@ -291,7 +298,7 @@ export default function analyze(match) {
       return core.typeDeclaration(type)
     },
 
-    Field(id, _colon, type) {
+    Field(_leftFence, id, _colon, type, _rightFence) {
       return core.field(id.sourceString, type.rep())
     },
 
@@ -304,12 +311,19 @@ export default function analyze(match) {
 
       // Parameters are part of the child context
       context = context.newChildContext({ inLoop: false, function: fun })
-      const params = parameters.rep()
+        const params = parameters.rep()
+        
+          params.forEach(param => {
+    console.log(`Function param type: ${JSON.stringify(param.type)}`)
+  })
 
       // Now that the parameters are known, we compute the function's type.
       // This is fine; we did not need the type to analyze the parameters,
       // but we do need to set it before analyzing the body.
-      const paramTypes = params.map(param => param.type)
+        const paramTypes = params.map(param => {
+            console.log(`Function param type: ${JSON.stringify(param.type)}`)
+            return param.type
+        })
       const returnType = type.children?.[0]?.rep() ?? VOID
       fun.type = core.functionType(paramTypes, returnType)
 
@@ -326,15 +340,20 @@ export default function analyze(match) {
       return paramList.asIteration().children.map(p => p.rep())
     },
 
-    Param(id, _colon, type) {
+    // TODO: LOST type and ID
+      Param(type, id) {
+          const paramType = type.rep()
+        console.log(`Declaring parameter ${id.sourceString} with type ${JSON.stringify(paramType)}`)
+
       const param = core.variable(id.sourceString, false, type.rep())
       mustNotAlreadyBeDeclared(param.name, { at: id })
       context.add(param.name, param)
       return param
     },
 
+     // * CUT from carlos
     Type_optional(baseType, _questionMark) {
-      return core.optionalType(baseType.rep())
+     return core.optionalType(baseType.rep())
     },
 
     Type_array(_left, baseType, _right) {
@@ -353,46 +372,7 @@ export default function analyze(match) {
       mustBeAType(entity, { at: id })
       return entity
     },
-
-    Statement_bump(exp, operator, _semicolon) {
-      const variable = exp.rep()
-      mustHaveIntegerType(variable, { at: exp })
-      return operator.sourceString === "++"
-        ? core.increment(variable)
-        : core.decrement(variable)
-    },
-
-    Statement_assign(variable, _eq, expression, _semicolon) {
-      const source = expression.rep()
-      const target = variable.rep()
-      mustBeAssignable(source, { toType: target.type }, { at: variable })
-      mustNotBeReadOnly(target, { at: variable })
-      return core.assignment(target, source)
-    },
-
-    Statement_call(call, _semicolon) {
-      return call.rep()
-    },
-
-    Statement_break(breakKeyword, _semicolon) {
-      mustBeInLoop({ at: breakKeyword })
-      return core.breakStatement
-    },
-
-    Statement_return(returnKeyword, exp, _semicolon) {
-      mustBeInAFunction({ at: returnKeyword })
-      mustReturnSomething(context.function, { at: returnKeyword })
-      const returnExpression = exp.rep()
-      mustBeReturnable(returnExpression, { from: context.function }, { at: exp })
-      return core.returnStatement(returnExpression)
-    },
-
-    Statement_shortreturn(returnKeyword, _semicolon) {
-      mustBeInAFunction({ at: returnKeyword })
-      mustNotReturnAnything(context.function, { at: returnKeyword })
-      return core.shortReturnStatement()
-    },
-
+    
     IfStmt_long(_if, exp, block1, _else, block2) {
       const test = exp.rep()
       mustHaveBooleanType(test, { at: exp })
@@ -422,9 +402,8 @@ export default function analyze(match) {
       const consequent = block.rep()
       context = context.parent
       return core.shortIfStatement(test, consequent)
-    },
-
-    LoopStmt_while(_while, exp, block) {
+      },
+     LoopStmt_while(_while, exp, block) {
       const test = exp.rep()
       mustHaveBooleanType(test, { at: exp })
       context = context.newChildContext({ inLoop: true })
@@ -442,18 +421,6 @@ export default function analyze(match) {
       return core.repeatStatement(count, body)
     },
 
-    LoopStmt_range(_for, id, _in, exp1, op, exp2, block) {
-      const [low, high] = [exp1.rep(), exp2.rep()]
-      mustHaveIntegerType(low, { at: exp1 })
-      mustHaveIntegerType(high, { at: exp2 })
-      const iterator = core.variable(id.sourceString, true, INT)
-      context = context.newChildContext({ inLoop: true })
-      context.add(id.sourceString, iterator)
-      const body = block.rep()
-      context = context.parent
-      return core.forRangeStatement(iterator, low, op.sourceString, high, body)
-    },
-
     LoopStmt_collection(_for, id, _in, exp, block) {
       const collection = exp.rep()
       mustHaveAnArrayType(collection, { at: exp })
@@ -464,10 +431,52 @@ export default function analyze(match) {
       context = context.parent
       return core.forStatement(iterator, collection, body)
     },
-
+    
     Block(_open, statements, _close) {
       // No need for a block node, just return the list of statements
       return statements.children.map(s => s.rep())
+    },
+
+    // different from Carlos
+    // Statement_bump(exp, operator, _semicolon) {
+    //  const variable = exp.rep()
+    //  mustHaveIntegerType(variable, { at: exp })
+    //  return operator.sourceString === "++"
+    //    ? core.increment(variable)
+    //    : core.decrement(variable)
+    // },
+
+    Statement_assign(variable, _brand, expression, _semicolon) {
+      const source = expression.rep()
+      const target = variable.rep()
+      mustBeAssignable(source, { toType: target.type }, { at: variable })
+      mustNotBeReadOnly(target, { at: variable })
+      return core.assignment(target, source)
+    },
+
+    Statement_call(call, _semicolon) {
+      return call.rep()
+    },
+
+    Statement_break(breakKeyword, _semicolon) {
+      mustBeInLoop({ at: breakKeyword })
+      return core.breakStatement
+    },
+
+      Statement_return(returnKeyword, exp, _semicolon) {
+        // TODO bring this back
+      mustBeInAFunction({ at: returnKeyword })
+      mustReturnSomething(context.function, { at: returnKeyword })
+      const returnExpression = exp.rep()
+      mustBeReturnable(returnExpression, { from: context.function }, { at: exp })
+      return core.returnStatement(returnExpression)
+    },
+
+      Statement_shortreturn(returnKeyword, _semicolon) {
+        // TODO bring this back
+      mustBeInAFunction({ at: returnKeyword })
+      mustNotReturnAnything(context.function, { at: returnKeyword })
+      return core.shortReturnStatement()
     },
 
     Exp_conditional(exp, _questionMark, exp1, colon, exp2) {
@@ -478,13 +487,15 @@ export default function analyze(match) {
       return core.conditional(test, consequent, alternate, consequent.type)
     },
 
+    //      different from Carlos
     Exp1_unwrapelse(exp1, elseOp, exp2) {
-      const [optional, op, alternate] = [exp1.rep(), elseOp.sourceString, exp2.rep()]
-      mustHaveAnOptionalType(optional, { at: exp1 })
-      mustBeAssignable(alternate, { toType: optional.type.baseType }, { at: exp2 })
-      return core.binary(op, optional, alternate, optional.type)
+     const [optional, op, alternate] = [exp1.rep(), elseOp.sourceString, exp2.rep()]
+     mustHaveAnOptionalType(optional, { at: exp1 })
+     mustBeAssignable(alternate, { toType: optional.type.baseType }, { at: exp2 })
+     return core.binary(op, optional, alternate, optional.type)
     },
 
+    // TODO increment each EXP
     Exp2_or(exp, _ops, exps) {
       let left = exp.rep()
       mustHaveBooleanType(left, { at: exp })
@@ -496,46 +507,13 @@ export default function analyze(match) {
       return left
     },
 
-    Exp2_and(exp, _ops, exps) {
+    Exp3_and(exp, _ops, exps) {
       let left = exp.rep()
       mustHaveBooleanType(left, { at: exp })
       for (let e of exps.children) {
         let right = e.rep()
         mustHaveBooleanType(right, { at: e })
         left = core.binary("&&", left, right, BOOLEAN)
-      }
-      return left
-    },
-
-    Exp3_bitor(exp, _ops, exps) {
-      let left = exp.rep()
-      mustHaveIntegerType(left, { at: exp })
-      for (let e of exps.children) {
-        let right = e.rep()
-        mustHaveIntegerType(right, { at: e })
-        left = core.binary("|", left, right, INT)
-      }
-      return left
-    },
-
-    Exp3_bitxor(exp, xorOps, exps) {
-      let left = exp.rep()
-      mustHaveIntegerType(left, { at: exp })
-      for (let e of exps.children) {
-        let right = e.rep()
-        mustHaveIntegerType(right, { at: e })
-        left = core.binary("^", left, right, INT)
-      }
-      return left
-    },
-
-    Exp3_bitand(exp, andOps, exps) {
-      let left = exp.rep()
-      mustHaveIntegerType(left, { at: exp })
-      for (let e of exps.children) {
-        let right = e.rep()
-        mustHaveIntegerType(right, { at: e })
-        left = core.binary("&", left, right, INT)
       }
       return left
     },
@@ -595,7 +573,9 @@ export default function analyze(match) {
       } else if (op === "!") {
         mustHaveBooleanType(operand, { at: exp })
         type = BOOLEAN
-      } else if (op === "some") {
+      }
+      
+      else if (op === "some") {
         type = core.optionalType(operand.type)
       } else if (op === "random") {
         mustHaveAnArrayType(operand, { at: exp })
@@ -616,35 +596,11 @@ export default function analyze(match) {
       return core.arrayExpression(elements)
     },
 
-    Exp9_emptyopt(_no, type) {
-      return core.emptyOptional(type.rep())
-    },
 
     Exp9_parens(_open, expression, _close) {
       return expression.rep()
     },
 
-    Exp9_subscript(exp1, _open, exp2, _close) {
-      const [array, subscript] = [exp1.rep(), exp2.rep()]
-      mustHaveAnArrayType(array, { at: exp1 })
-      mustHaveIntegerType(subscript, { at: exp2 })
-      return core.subscript(array, subscript)
-    },
-
-    Exp9_member(exp, dot, id) {
-      const object = exp.rep()
-      let structType
-      if (dot.sourceString === "?.") {
-        mustHaveAnOptionalStructType(object, { at: exp })
-        structType = object.type.baseType
-      } else {
-        mustHaveAStructType(object, { at: exp })
-        structType = object.type
-      }
-      mustHaveMember(structType, id.sourceString, { at: id })
-      const field = structType.fields.find(f => f.name === id.sourceString)
-      return core.memberExpression(object, dot.sourceString, field)
-    },
 
     Exp9_call(exp, open, expList, _close) {
       const callee = exp.rep()

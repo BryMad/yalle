@@ -3,26 +3,26 @@ import parse from "../src/parser.js";
 
 const syntaxChecks = [
   // TODO toal office hours... why was first test working as printed? why was print still working across the board?
-  ["all numeric literal forms", "holler 89.123;"],
-  ["complex expressions", "holler (83 * ((((-((((13 / 21)))))))) + 1 - 0);"],
-  ["all unary operators", "holler (-3); holler (!false);"],
-  ["all binary operators", "holler ( (x && y) || z * 1 / 2 ** 3 + 4 < 5);"],
+  ["all numeric literal forms", "print(89.123);"],
+  ["complex expressions", "print(83 * ((((-((((13 / 21)))))))) + 1 - 0);"],
+  ["all unary operators", "print(-3); holler (!false);"],
+  ["all binary operators", "print( (x && y) || z * 1 / 2 ** 3 + 4 < 5);"],
   [
     "all arithmetic operators",
-    "brand int x -= (!3) * 2 + 4 - (-7.3) * 8 ** 13 / 1;",
+    "brand x -= (!3) * 2 + 4 - (-7.3) * 8 ** 13 / 1;",
   ],
   [
     "all relational operators",
-    "brand float x -= 1<(2<=(3==(4!=(5 >= (6>7)))));",
+    "brand x -= 1<(2<=(3==(4!=(5 >= (6>7)))));",
   ],
   [
     "function with multiple parameters",
-    "task calculate(int a, float b, string c) ~~{ roundup 4; }",
+    "task calculate(int: a, float: b, string: c) ~~{ roundup 4; }",
   ],
-  ["for loop with array", "for item in [1, 2, 3, 4] ~~{ holler(item); }"],
-
-  ["all logical operators", "brand bool x -= true && false || (!false);"],
-  ["end of program inside comment", "holler 0; // yay"],
+  ["for loop with array", "for item in [1, 2, 3, 4] ~~{ print(item); }"],
+// TODO add back ors & ands
+  ["and logical operators", "brand x -= true && false;"],
+  ["end of program inside comment", "print(0); //yay"],
   ["comments with no text are ok", "holler(1);//\nholler(0);//"],
   ["non-Latin letters in identifiers", "コンパイラ -= 100;"],
   ["return", "roundup x;"],
@@ -36,7 +36,11 @@ const syntaxChecks = [
     "iffin horsehoes < horses * 4 ~~{roundup moreHorseShoes();} otherwise ~~{roundup 30;}",
   ],
   ["while/till", "till month < 9 ~~{holler(30);}"],
-    ["array type variable declaration", "brand [int] nums -= [1, 2, 3];"],
+    ["array type for param", "task f(x: [[[boolean]]]) ~~{}"],
+    ["array type returned", "task fart(): [[int]] ~~{}"],
+
+  
+  
   
  
 /* Office hours:
@@ -52,24 +56,25 @@ const syntaxChecks = [
   [
     "string literal with escaped characters",
     'holler("This is a \\"test\\".");',
-  ],
-  ["array declaration and initialization", "brand [int] nums -= [1, 2, 3, 4];"],
+    ],
+  // not going to work w/ Carlos arrays
+  // ["array declaration and initialization", "brand [int] nums -= [1, 2, 3, 4];"],
 
   ["nested if", "iffin x > 5 ~~{ iffin y < 10 ~~{ holler(3); } }"],
   ["for loop", "for i in [1,2,3] ~~{ holler(i); }"],
   [
     "chained logical and arithmetic operations",
-    "brand bool result -= (x > 5 && y < 10) || (a + b == c - d);",
+    "brand result -= (x > 5 && y < 10) || (a + b == c - d);",
     ],
-    ["struct declaration", "ranch RanchInfo -x-x-x-x- \n| acres: int |\n| cattle: int |\n-x-x-x-x-"],
-    ["struct initialized", "brand RanchInfo KingRanch -= RanchoInfo(825000, 35000);"], 
-  ["function works", "task calculateHorseshoes(int horses, int horseshoes) ~~{iffin horsehoes < horses * 4 ~~{roundup false;}}"]
+    ["struct declaration", "ranch RanchInfo -x-x-x-x- \n acres: int \n cattle: int \n-x-x-x-x-"],
+    ["struct initialized", "brand KingRanch -= RanchoInfo(825000, 35000);"], 
+  ["function works", "task calculateHorseshoes(int: horses, int: horseshoes) ~~{iffin horsehoes < horses * 4 ~~{roundup false;}}"],
   // ! TODO struct test
 //   [
 //     "try-catch-finally block",
 //     "try ~~{ riskyOperation(); } catch (Error e) ~~{ handle(e); } finally ~~{ cleanup(); }",
 //   ],
-//   ["optional type declaration and use", "brand int? maybeNum = null;"],
+  ["optional types", "task f(c: int?): float ~~{}"],
 ];
 
 const syntaxErrors = [
@@ -86,17 +91,18 @@ const syntaxErrors = [
   ["bad break statement", "whoa 5;", /Line 1, col 6/],
   ["too short lasso", "~{x};", /Line 1, col 1/],
   ["double if", "iffin iffin x == 2", /Line 1, col 7/],
-  ["missing brand handle", "brand x = 5;", /Line 1, col 9/],
-  [
-    "array declaration and initialization missing bracket",
-    "brand [int nums = [1, 2, 3, 4];",
-    /Line 1, col 12/,
-  ],
-  [
-    'chained logical and arithmetic operations missing "or" pipe',
-    "brand bool result -= (x > 5 && y < 10) | (a + b == c - d);",
-    /Line 1, col 40/,
-  ],
+    ["missing brand handle", "brand x = 5;", /Line 1, col 9/],
+  //OLD GRAMMAR array handling
+//   [
+//     "array declaration and initialization missing bracket",
+//     "brand [int nums = [1, 2, 3, 4];",
+//     /Line 1, col 12/,
+//   ],
+//   [
+//     'chained logical and arithmetic operations missing "or" pipe',
+//     "brand bool result -= (x > 5 && y < 10) | (a + b == c - d);",
+//     /Line 1, col 40/,
+//   ],
   ["missing semicolon", "iffin x > 5 ~~{ holler(x)}", /Line 1, col 26/],
   ["misplaced semicolon", "iffin x > 5; ~~{ holler(x);", /Line 1, col 12/],
   ["missing block closure", "iffin x > 5 ~~{ holler(x);", /Line 1, col 27/],

@@ -1,0 +1,105 @@
+yalle {
+    Program     = Statement+
+
+    Statement   = VarDecl
+                | TypeDecl
+                | FunDecl
+                // Bmup removed from Carlos
+                // Print Added
+                | print Exp ";"                                 --print
+                // TODO how is this assign different from VarDelc?
+                | Exp9 "-=" Exp ";"                              --assign
+                | Exp9_call ";"                                  --call
+                | break ";"                                     --break
+                | return Exp ";"                                --return
+                | return ";"                                    --shortreturn
+                | IfStmt
+                | LoopStmt
+    // CHANGE: vardecl has type
+    VarDecl     = let Type id "-=" Exp ";"
+    TypeDecl    = struct id "-x-x-x-x-" Field* "-x-x-x-x-"
+    Field       = "|" id ":" Type "|"
+    FunDecl     = function id Params (":" Type)? Block
+    Params      = "(" ListOf<Param, ","> ")"
+    Param       = Type id
+  
+    Type        = Type "?"                                      --optional
+                | "[" Type "]"                                  --array
+                | "(" ListOf<Type, ","> ")" "->" Type           --function
+                | id                                            --id
+    IfStmt      = if Exp Block else Block                       --long
+                | if Exp Block else IfStmt                      --elsif
+                | if Exp Block                                  --short
+    LoopStmt    = while Exp Block                               --while
+                | repeat Exp Block                              --repeat
+                // Carlos cut for ID in Exp -range
+                | for id in Exp Block                           --collection
+    Block       = "~~{" Statement* "}"
+
+    Exp         = Exp1 "?" Exp1 ":" Exp                         --conditional
+                | Exp1
+  
+    Exp1        = Exp1 "??" Exp2                                --unwrapelse
+              | Exp2
+    // CARLOS change - || and && becomes left associative
+    Exp2        = Exp2 "||" Exp3                             --or                             
+                | Exp3
+    Exp3        = Exp3 "&&" Exp4                             --and
+                | Exp4
+    // non associative            
+    Exp4        = Exp5 ("<="|"<"|"=="|"!="|">="|">") Exp5       --compare
+                | Exp5
+    Exp5        = Exp5 ("<<" | ">>") Exp6                       --shift
+                | Exp6
+    Exp6        = Exp6 ("+" | "-") Exp7                         --add
+                | Exp7
+    Exp7        = Exp7 ("*"| "/" | "%") Exp8                    --multiply
+                | Exp8
+    Exp8        = Exp9 "**" Exp8                                --power
+                | Exp9
+                | ("#" | "-" | "!" ) Exp8        --unary
+    Exp9        = true ~mut
+                | false ~mut
+                | floatlit ~mut
+                | intlit ~mut
+                | no Type ~mut                                  --emptyopt
+                | stringlit ~mut
+                | Exp9 ("(" | "?(") ListOf<Exp, ","> ")" ~mut   --call
+                | Exp9 ("[" | "?[") Exp "]"                     --subscript
+                | Exp9 ("." | "?.") id                          --member
+                | id                                            --id
+                | Type_array "(" ")" ~mut                       --emptyarray
+                | "[" NonemptyListOf<Exp, ","> "]" ~mut         --arrayexp
+                // ! TODO - need to double check what parens do here,  3/13 associativity lecture
+                | "(" Exp ")" ~mut                              --parens
+
+    intlit      = digit+
+    floatlit    = digit+ "." digit+ (("E" | "e") ("+" | "-")? digit+)?
+    stringlit   = "\"" char* "\""
+    char        = ~"\\" ~"\"" any
+                | "\\" ("n" | "t" | "\"" | "\\")                --escape
+    mut         = ~"==" "=" | "++" | "--"
+
+    let         = "brand" ~alnum
+    struct      = "ranch" ~alnum
+    function    = "task" ~alnum
+    if          = "iffin" ~alnum
+    else        = "otherwise" ~alnum
+    while       = "till" ~alnum
+    repeat      = "repeat" ~alnum
+    for         = "for" ~alnum
+    random      = "random" ~alnum
+    in          = "in" ~alnum
+    break       = "whoa" ~alnum
+    print       = "holler" ~alnum
+    return      = "roundup" ~alnum
+    some        = "some" ~alnum
+    no          = "no" ~alnum
+    true        = "true" ~alnum
+    false       = "false" ~alnum
+    keyword     = let | struct | function | if | else | while | repeat
+                | for | in | break | return | true | false
+    id          = ~keyword letter alnum*
+
+    space      += "//" (~"\n" any)*                             --comment
+}
