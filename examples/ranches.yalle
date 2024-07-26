@@ -1,0 +1,11 @@
+ranch RanchInfo
+-x-x-x-x-
+    acres: int
+    cattle: int
+-x-x-x-x-
+
+tag KingRanch -= RanchInfo(825000, 35000);
+
+task getStockingRate(KingRanch: RanchInfo): float 
+    ~~{roundup KingRanch.cattle / KingRanch.acres ; }
+

@@ -92,7 +92,6 @@ const semanticErrors = [
   ["undeclared id", "print(x);", /Identifier x not declared/],
   ["redeclared id", "tag x -= 1;tag x -= 1;", /Identifier x already declared/],
     ["recursive ranch", "ranch S -x-x-x-x- x: int y: S -x-x-x-x-", /must not be self-containing/],
-  // ! TODO HERE
   ["assign to const", "brand x -= 1;x -= 2;", /Cannot assign to constant/],
   ["assign bad type", "tag x-=1;x-=true;", /Cannot assign a boolean to a int/],
   ["assign bad array type", "tag x-=1;x-=[true];", /Cannot assign a \[boolean\] to a int/],
@@ -103,7 +102,6 @@ const semanticErrors = [
     "till true ~~{task f() ~~{whoa;}}",
     /Break can only appear in a loop/,
     ],
-  // !! TODO HERE
   ["return outside task", "roundup;", /Return can only appear in a task/],
   [
     "return value from void task",
@@ -146,7 +144,7 @@ const semanticErrors = [
   ["diff type array elements", "print([3,3.0]);", /Not all elements have the same type/],
     ["shadowing", "tag x -= 1;\ntill true ~~{tag x -= 1;}", /Identifier x already declared/],
   // ! TODO
-  ["call of uncallable", "tag x -= 1;\nprint(x());", /Call of non-task/],
+  ["call of uncallable", "tag x -= 1;\nprint(x());", /Call of non-task or non-ranch/],
   [
     "Too many args",
     "task f(x: int) ~~{}\nf(1,2);",

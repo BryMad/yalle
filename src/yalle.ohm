@@ -84,7 +84,6 @@ Yalle {
   mut         = ~"==" "=" | "++" | "--"
 
   let         = "tag" ~alnum
-  // TODO brand 2
   const       = "brand" ~alnum
   struct      = "ranch" ~alnum
   function    = "task" ~alnum

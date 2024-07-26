@@ -2,4 +2,4 @@ task gcd(x: int, y: int): int ~~{
   roundup y == 0 ? x : gcd(y, x % y);
 }
 
-print(gcd(5023427, 920311));
+print(gcd(12, 24));

@@ -231,12 +231,12 @@ export default function analyze(match) {
   }
 
   function mustBeInAFunction(at) {
-    must(context.function, "Return can only appear in a function", at)
+    must(context.function, "Return can only appear in a task", at)
   }
 
   function mustBeCallable(e, at) {
     const callable = e?.kind === "StructType" || e.type?.kind === "FunctionType"
-    must(callable, "Call of non-function or non-constructor", at)
+    must(callable, "Call of non-task or non-ranch", at)
   }
 
   function mustNotReturnAnything(f, at) {
@@ -271,7 +271,7 @@ export default function analyze(match) {
 
     VarDecl(modifier, id, _eq, exp, _semicolon) {
       const initializer = exp.rep()
-      const readOnly = modifier.sourceString === "const"
+      const readOnly = modifier.sourceString === "brand"
       const variable = core.variable(id.sourceString, readOnly, initializer.type)
       mustNotAlreadyBeDeclared(id.sourceString, { at: id })
       context.add(id.sourceString, variable)
@@ -282,6 +282,7 @@ export default function analyze(match) {
       // To allow recursion, enter into context without any fields yet
       const type = core.structType(id.sourceString, [])
       mustNotAlreadyBeDeclared(id.sourceString, { at: id })
+      print(mustNotAlreadyBeDeclared(id.sourceString, { at: id }))
       context.add(id.sourceString, type)
       // Now add the types as you parse and analyze. Since we already added
       // the struct type itself into the context, we can use it in fields.
