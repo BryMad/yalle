@@ -282,7 +282,6 @@ export default function analyze(match) {
       // To allow recursion, enter into context without any fields yet
       const type = core.structType(id.sourceString, [])
       mustNotAlreadyBeDeclared(id.sourceString, { at: id })
-      print(mustNotAlreadyBeDeclared(id.sourceString, { at: id }))
       context.add(id.sourceString, type)
       // Now add the types as you parse and analyze. Since we already added
       // the struct type itself into the context, we can use it in fields.

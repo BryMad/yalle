@@ -149,7 +149,7 @@ export const standardLibrary = Object.freeze({
   void: voidType,
   any: anyType,
   π: variable("π", true, floatType),
-  print: fun("print", anyToVoidType),
+  holler: fun("holler", anyToVoidType),
   sin: fun("sin", floatToFloatType),
   cos: fun("cos", floatToFloatType),
   exp: fun("exp", floatToFloatType),

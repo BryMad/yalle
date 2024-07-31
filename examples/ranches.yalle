@@ -1,11 +1,12 @@
 ranch RanchInfo
--x-x-x-x-
-    acres: int
-    cattle: int
--x-x-x-x-
+    -x-x-x-x-
+        acres: float
+        cattle: float
+    -x-x-x-x-
 
-tag KingRanch -= RanchInfo(825000, 35000);
+brand KingRanch -= RanchInfo(825000.0, 35000.0);
 
-task getStockingRate(KingRanch: RanchInfo): float 
-    ~~{roundup KingRanch.cattle / KingRanch.acres ; }
+task getStockingRate(r: RanchInfo): float 
+    ~~{roundup r.cattle / r.acres ; }
 
+holler(getStockingRate(KingRanch));

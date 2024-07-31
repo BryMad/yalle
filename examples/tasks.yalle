@@ -3,4 +3,4 @@ task addNine(num: int): int
 task double(num: int): int 
     ~~{ roundup num * 2; }
 
-print(double(addNine(1)));  // 20
+holler(double(addNine(1)));  // 20

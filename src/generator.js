@@ -11,7 +11,7 @@ export default function generate(program) {
   const output = []
 
   const standardFunctions = new Map([
-    [standardLibrary.print, x => `console.log(${x})`],
+    [standardLibrary.holler, x => `console.log(${x})`],
     [standardLibrary.sin, x => `Math.sin(${x})`],
     [standardLibrary.cos, x => `Math.cos(${x})`],
     [standardLibrary.exp, x => `Math.exp(${x})`],

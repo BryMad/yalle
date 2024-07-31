@@ -1,5 +1,14 @@
-task gcd(x: int, y: int): int ~~{
-  roundup y == 0 ? x : gcd(y, x % y);
+// given how many horses and horseshoes you have....
+// reckon how many horseshoes you need to git at the store to reshoe all your horses
+
+task getHorseshoesNeeded(horses: int, currentShoes: int): int ~~{
+  tag shoesNeeded -= horses * 4;
+  tag shoesMissing -= shoesNeeded - currentShoes;
+  iffin shoesMissing > 0 
+    ~~{ roundup shoesMissing;}
+  otherwise
+    ~~{ roundup 0;}
 }
 
-print(gcd(12, 24));
+holler(getHorseshoesNeeded(16, 393)); // 0 needed!
+holler(getHorseshoesNeeded(5, 15)); // 0 needed!

@@ -2,11 +2,11 @@ import assert from "node:assert/strict";
 import parse from "../src/parser.js";
 
 const syntaxChecks = [
-  // TODO toal office hours... why was first test working as printed? why was print still working across the board?
-  ["all numeric literal forms", "print(89.123);"],
-  ["complex expressions", "print(83 * ((((-((((13 / 21)))))))) + 1 - 0);"],
-  ["all unary operators", "print(-3); holler (!false);"],
-  ["all binary operators", "print( (x && y) || z * 1 / 2 ** 3 + 4 < 5);"],
+  // TODO toal office hours... why was first test working as hollered? why was holler still working across the board?
+  ["all numeric literal forms", "holler(89.123);"],
+  ["complex expressions", "holler(83 * ((((-((((13 / 21)))))))) + 1 - 0);"],
+  ["all unary operators", "holler(-3); holler (!false);"],
+  ["all binary operators", "holler( (x && y) || z * 1 / 2 ** 3 + 4 < 5);"],
   [
     "all arithmetic operators",
     "brand x -= (!3) * 2 + 4 - (-7.3) * 8 ** 13 / 1;",
@@ -19,10 +19,10 @@ const syntaxChecks = [
     "function with multiple parameters",
     "task calculate(int: a, float: b, string: c) ~~{ roundup 4; }",
   ],
-  ["for loop with array", "for item in [1, 2, 3, 4] ~~{ print(item); }"],
+  ["for loop with array", "for item in [1, 2, 3, 4] ~~{ holler(item); }"],
 // TODO add back ors & ands
   ["and logical operators", "brand x -= true && false;"],
-  ["end of program inside comment", "print(0); //yay"],
+  ["end of program inside comment", "holler(0); //yay"],
   ["comments with no text are ok", "holler(1);//\nholler(0);//"],
   ["non-Latin letters in identifiers", "コンパイラ -= 100;"],
   ["return", "roundup x;"],
@@ -82,7 +82,7 @@ const syntaxErrors = [
   ["non-letter in an identifier", "ab😭c = 2", /Line 1, col 3/],
   ["malformed number", "x-= 2.", /Line 1, col 7/],
   ["missing semicolon", "x -= 3 y -= 1", /Line 1, col 8/],
-  ["a missing right operand", "print(5 -", /Line 1, col 10/],
+  ["a missing right operand", "holler(5 -", /Line 1, col 10/],
   ["a non-operator", "holler(7 * ((2 _ 3)", /Line 1, col 16/],
   ["an expression starting with a )", "x -= );", /Line 1, col 6/],
   ["a statement starting with expression", "x * 5;", /Line 1, col 3/],
