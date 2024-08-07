@@ -173,7 +173,16 @@ const semanticErrors = [
     'task f(x: int): int ~~{roundup 1;} task g(y: int): string ~~{roundup "uh-oh";} f -= g;',
     /Cannot assign a \(int\)->string to a \(int\)->int/,
   ],
-  ["bad call to sin()", "holler(sin(true));", /Cannot assign a boolean to a float/],
+    ["bad call to sin()", "holler(sin(true));", /Cannot assign a boolean to a float/],
+ 
+    ["bad call to sin()", "holler(sin(4));", /Cannot assign a int to a float/],
+    ["bad call to sin()", 'holler(sin("blah")); ', /Cannot assign a string to a float/],
+    ["bad return type for int function", 'task addNine(num: int): int ~~{ roundup "blah";}', /Cannot assign a string to a int/],
+    ["bad return type for void function", 'tag ', /Cannot assign a void to a string/],
+
+//   ["bad call to sin()", "holler(sin(true));", /Cannot assign a boolean to a float/],
+//   ["bad call to sin()", "holler(sin(true));", /Cannot assign a boolean to a float/],
+  
   ["Non-type in param", "tag x-=1;task f(y:x)~~{}", /Type expected/],
   ["Non-type in return type", "tag x-=1;task f():x~~{roundup 1;}", /Type expected/],
   ["Non-type in field type", "tag x-=1;ranch S -x-x-x-x- y:x -x-x-x-x-", /Type expected/],
@@ -202,3 +211,64 @@ describe("The analyzer", () => {
     )
   })
 })
+
+describe("typeDescription", () => {
+  it("handles IntType", () => {
+    assert.strictEqual(typeDescription({ kind: "IntType" }), "int");
+  });
+
+  it("handles FloatType", () => {
+    assert.strictEqual(typeDescription({ kind: "FloatType" }), "float");
+  });
+
+  it("handles StringType", () => {
+    assert.strictEqual(typeDescription({ kind: "StringType" }), "string");
+  });
+
+  it("handles BoolType", () => {
+    assert.strictEqual(typeDescription({ kind: "BoolType" }), "boolean");
+  });
+
+  it("handles VoidType", () => {
+    assert.strictEqual(typeDescription({ kind: "VoidType" }), "void");
+  });
+
+  it("handles AnyType", () => {
+    assert.strictEqual(typeDescription({ kind: "AnyType" }), "any");
+  });
+
+  it("handles StructType", () => {
+    assert.strictEqual(typeDescription({ kind: "StructType", name: "MyStruct" }), "MyStruct");
+  });
+
+  it("handles FunctionType", () => {
+    const type = { kind: "FunctionType", paramTypes: [{ kind: "IntType" }], returnType: { kind: "VoidType" } };
+    assert.strictEqual(typeDescription(type), "(int)->void");
+  });
+
+  it("handles ArrayType", () => {
+    const type = { kind: "ArrayType", baseType: { kind: "StringType" } };
+    assert.strictEqual(typeDescription(type), "[string]");
+  });
+
+  it("handles OptionalType", () => {
+    const type = { kind: "OptionalType", baseType: { kind: "BoolType" } };
+    assert.strictEqual(typeDescription(type), "boolean?");
+  });
+
+  // Test for edge cases
+  it("handles nested function types", () => {
+    const type = { kind: "FunctionType", paramTypes: [{ kind: "FunctionType", paramTypes: [{ kind: "IntType" }], returnType: { kind: "VoidType" } }], returnType: { kind: "BoolType" } };
+    assert.strictEqual(typeDescription(type), "((int)->void)->boolean");
+  });
+
+  it("handles nested array types", () => {
+    const type = { kind: "ArrayType", baseType: { kind: "ArrayType", baseType: { kind: "IntType" } } };
+    assert.strictEqual(typeDescription(type), "[[int]]");
+  });
+
+  it("handles complex optional types", () => {
+    const type = { kind: "OptionalType", baseType: { kind: "ArrayType", baseType: { kind: "OptionalType", baseType: { kind: "StringType" } } } };
+    assert.strictEqual(typeDescription(type), "[string?]?");
+  });
+});
