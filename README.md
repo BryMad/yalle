@@ -54,7 +54,7 @@ node src/yalle.js <filename> <outputType>
 
 More information about how to type in Yalle can be found on the WEBSITE
 
-TODO
+//TODO
 
 
 

@@ -1,0 +1,14 @@
+task nthFibonacci(n: int): int 
+    ~~{
+        iffin n<0
+            ~~{holler("must enter a number greater than 0");}
+        otherwise iffin n == 0
+            ~~{roundup 0;}
+        otherwise iffin n == 1
+            ~~{roundup 1;}
+        otherwise
+            ~~{roundup nthFibonacci(n-1) + nthFibonacci(n-2);}
+    }
+        
+        
+holler(nthFibonacci(4)); // 3

@@ -144,7 +144,7 @@ export default function generate(program) {
     },
     UnaryExpression(e) {
       const operand = gen(e.operand)
-      if (e.op === "some") {
+      if (e.op === "someodd") {
         return operand
       } else if (e.op === "#") {
         return `${operand}.length`
