@@ -96,7 +96,7 @@ Yalle {
   random      = "random" ~alnum
   break       = "whoa" ~alnum
   return      = "roundup" ~alnum
-  some        = "some" ~alnum
+  some        = "someodd" ~alnum
   no          = "no" ~alnum
   true        = "true" ~alnum
   false       = "false" ~alnum

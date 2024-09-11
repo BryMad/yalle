@@ -155,7 +155,7 @@ const fixtures = [
       tag x -= no int;
       tag y -= x ?? 2;
       ranch S -x-x-x-x- x: int -x-x-x-x-
-      tag z -= some S(1);
+      tag z -= someodd S(1);
       tag w -= z?.x;
     `,
     expected: dedent`
@@ -174,10 +174,10 @@ const fixtures = [
     name: "for loops",
     source: `
       for i in 1..<50 ~~{
-        print(i);
+        holler(i);
       }
       for j in [10, 20, 30] ~~{
-        print(j);
+        holler(j);
       }
       repeat 3 ~~{
         // hello
@@ -201,10 +201,10 @@ const fixtures = [
   {
     name: "standard library",
     source: `
-      tag x = 0.5;
-      print(sin(x) - cos(x) + exp(x) * ln(x) / hypot(2.3, x));
-      print(bytes("∞§¶•"));
-      print(codepoints("💪🏽💪🏽🖖👩🏾💁🏽‍♀️"));
+      tag x -= 0.5;
+      holler(sin(x) - cos(x) + exp(x) * ln(x) / hypot(2.3, x));
+      holler(bytes("∞§¶•"));
+      holler(codepoints("💪🏽💪🏽🖖👩🏾💁🏽‍♀️"));
     `,
     expected: dedent`
       let x_1 = 0.5;
@@ -219,7 +219,6 @@ describe("The code generator", () => {
   for (const fixture of fixtures) {
     it(`produces expected js output for the ${fixture.name} program`, () => {
       const actual = generate(optimize(analyze(parse(fixture.source))))
-      console.log(actual)
       assert.deepEqual(actual, fixture.expected)
     })
   }

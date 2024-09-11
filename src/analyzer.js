@@ -595,7 +595,7 @@ export default function analyze(match) {
       } else if (op === "!") {
         mustHaveBooleanType(operand, { at: exp })
         type = BOOLEAN
-      } else if (op === "some") {
+      } else if (op === "someodd") {
         type = core.optionalType(operand.type)
       } else if (op === "random") {
         mustHaveAnArrayType(operand, { at: exp })
