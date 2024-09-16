@@ -23,11 +23,11 @@ async function compileFromFile(filename, outputType) {
   try {
     const buffer = await fs.readFile(filename)
     const compiled = compile(buffer.toString(), outputType)
-      console.log(stringify(compiled, "kind") || compiled)
+    console.log(stringify(compiled, "kind") || compiled)
     //   const match = parse("brand int fart -= 8 ;")
     //   const rep = analyze(match)
     //   console.log(util.inspect(rep, { depth: 5 }))
-      
+
   } catch (e) {
     console.error(`\u001b[31m${e}\u001b[39m`)
     process.exitCode = 1

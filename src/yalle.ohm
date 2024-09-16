@@ -5,8 +5,7 @@ Yalle {
               | TypeDecl
               | FunDecl
               | Exp9 ("++" | "--") ";"                        --bump
-              // This one confuses me. Doesn't this allow 4 = 5? maybe handled in Analyzer
-              | Exp9 "-=" Exp ";"                              --assign
+              | Exp9 "-=" Exp ";"                             --assign
               | Exp9_call ";"                                 --call
               | break ";"                                     --break
               | return Exp ";"                                --return
@@ -16,7 +15,6 @@ Yalle {
 
   VarDecl     = (let | const) id "-=" Exp ";"
   TypeDecl    = struct id "-x-x-x-x-" Field* "-x-x-x-x-"
-  // TODO   Field       = "|" id ":" Type "|"
   
   Field       = id ":" Type
   FunDecl     = function id Params (":" Type)? Block
@@ -100,7 +98,7 @@ Yalle {
   no          = "no" ~alnum
   true        = "true" ~alnum
   false       = "false" ~alnum
-  // TODO print what is going on?
+
   keyword     = let | const | struct | function | if | else | while | repeat
               | for | in | break | return | some | no | random | true | false
   id          = ~keyword letter alnum*

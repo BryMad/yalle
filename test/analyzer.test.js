@@ -81,7 +81,7 @@ const semanticChecks = [
   ["built-in constants", "holler(25.0 * π);"],
   ["built-in sin", "holler(sin(π));"],
   ["built-in cos", "holler(cos(93.999));"],
-    ["built-in hypot", "holler(hypot(-4.0, 3.00001));"],
+  ["built-in hypot", "holler(hypot(-4.0, 3.00001));"],
 ]
 
 // Programs that are syntactically correct but have semantic errors
@@ -91,7 +91,7 @@ const semanticErrors = [
   ["non-int decrement", 'tag x-=someodd[""];x++;', /an integer/],
   ["undeclared id", "holler(x);", /Identifier x not declared/],
   ["redeclared id", "tag x -= 1;tag x -= 1;", /Identifier x already declared/],
-    ["recursive ranch", "ranch S -x-x-x-x- x: int y: S -x-x-x-x-", /must not be self-containing/],
+  ["recursive ranch", "ranch S -x-x-x-x- x: int y: S -x-x-x-x-", /must not be self-containing/],
   ["assign to const", "brand x -= 1;x -= 2;", /Cannot assign to constant/],
   ["assign bad type", "tag x-=1;x-=true;", /Cannot assign a boolean to a int/],
   ["assign bad array type", "tag x-=1;x-=[true];", /Cannot assign a \[boolean\] to a int/],
@@ -101,13 +101,13 @@ const semanticErrors = [
     "break inside task",
     "till true ~~{task f() ~~{whoa;}}",
     /Break can only appear in a loop/,
-    ],
+  ],
   ["return outside task", "roundup;", /Return can only appear in a task/],
   [
     "return value from void task",
     "task f() ~~{roundup 1;}",
     /Cannot return a value/,
-    ],
+  ],
   ["return nothing from non-void", "task f(): int ~~{roundup;}", /should be returned/],
   ["return type mismatch", "task f(): int ~~{roundup false;}", /boolean to a int/],
   ["non-boolean short iffin test", "iffin 1 ~~{}", /Expected a boolean/],
@@ -142,8 +142,7 @@ const semanticErrors = [
   ["non-integer index", "tag a-=[1];holler(a[false]);", /Expected an integer/],
   ["no such field", "ranch S -x-x-x-x- -x-x-x-x- tag x-=S(); holler(x.y);", /No such field/],
   ["diff type array elements", "holler([3,3.0]);", /Not all elements have the same type/],
-    ["shadowing", "tag x -= 1;\ntill true ~~{tag x -= 1;}", /Identifier x already declared/],
-  // ! TODO
+  ["shadowing", "tag x -= 1;\ntill true ~~{tag x -= 1;}", /Identifier x already declared/],
   ["call of uncallable", "tag x -= 1;\nholler(x());", /Call of non-task or non-ranch/],
   [
     "Too many args",
@@ -173,16 +172,11 @@ const semanticErrors = [
     'task f(x: int): int ~~{roundup 1;} task g(y: int): string ~~{roundup "uh-oh";} f -= g;',
     /Cannot assign a \(int\)->string to a \(int\)->int/,
   ],
-    ["bad call to sin()", "holler(sin(true));", /Cannot assign a boolean to a float/],
- 
-    ["bad call to sin()", "holler(sin(4));", /Cannot assign a int to a float/],
-    ["bad call to sin()", 'holler(sin("blah")); ', /Cannot assign a string to a float/],
-    ["bad return type for int function", 'task addNine(num: int): int ~~{ roundup "blah";}', /Cannot assign a string to a int/],
-//    ["bad return type for void function", 'tag ', /Cannot assign a void to a string/],
+  ["bad call to sin()", "holler(sin(true));", /Cannot assign a boolean to a float/],
 
-//   ["bad call to sin()", "holler(sin(true));", /Cannot assign a boolean to a float/],
-//   ["bad call to sin()", "holler(sin(true));", /Cannot assign a boolean to a float/],
-  
+  ["bad call to sin()", "holler(sin(4));", /Cannot assign a int to a float/],
+  ["bad call to sin()", 'holler(sin("blah")); ', /Cannot assign a string to a float/],
+  ["bad return type for int function", 'task addNine(num: int): int ~~{ roundup "blah";}', /Cannot assign a string to a int/],
   ["Non-type in param", "tag x-=1;task f(y:x)~~{}", /Type expected/],
   ["Non-type in return type", "tag x-=1;task f():x~~{roundup 1;}", /Type expected/],
   ["Non-type in field type", "tag x-=1;ranch S -x-x-x-x- y:x -x-x-x-x-", /Type expected/],

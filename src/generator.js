@@ -22,8 +22,8 @@ export default function generate(program) {
   ])
 
   // Variable and function names in JS will be suffixed with _1, _2, _3,
-  // etc. This is because "switch", for example, is a legal name in Carlos,
-  // but not in JS. So, the Carlos variable "switch" must become something
+  // etc. This is because "switch", for example, is a legal name in Yalle,
+  // but not in JS. So, the Yalle variable "switch" must become something
   // like "switch_1". We handle this by mapping each name to its suffix.
   const targetName = (suffixes => {
     return entity => {
@@ -48,7 +48,7 @@ export default function generate(program) {
       output.push(`let ${gen(d.variable)} = ${gen(d.initializer)};`)
     },
     TypeDeclaration(d) {
-      // The only type declaration in Carlos is the struct! Becomes a JS class.
+      // The only type declaration in Yalle is the struct! Becomes a JS class.
       output.push(`class ${gen(d.type)} {`)
       output.push(`constructor(${d.type.fields.map(gen).join(",")}) {`)
       for (let field of d.type.fields) {
