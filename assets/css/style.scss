@@ -1,54 +1,50 @@
 ---
 ---
 @import "{{ site.theme }}";
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Ultra&display=swap');
 
-/* Apply Wild West styles to elements with custom classes */
 .header-level-1 {
-    font-family: "Roboto Slab", serif !important;
-    font-weight: 700; /* Makes headers bold */
-    color: saddlebrown !important; /* Rustic brown color */
-    font-size: 2.5em; /* Adjust size to be more noticeable */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4); /* Add a shadow for an old-timey effect */
-    border-bottom: 2px solid #8B4513; /* Add a bottom border to resemble an old sign */
+    font-family: "Ultra", serif !important;
+    color: saddlebrown !important; 
+    font-size: 2.5em; 
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4); 
+    border-bottom: 2px solid #8B4513; 
 }
 
 .header-level-2 {
-    font-family: "Roboto Slab", serif !important;
-    font-weight: 700; /* Makes headers bold */
-    color: darkred !important; /* Deep red color */
-    font-size: 2em; /* Adjust size for hierarchy */
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4); /* Subtle shadow */
+    font-family: "Mountains of Christmas", cursive !important;
+    font-weight: 700; 
+    color: darkred !important; 
+    font-size: 2em; 
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4); 
 }
 
 body {
-    font-family: "Roboto Slab", serif !important;
-    background-color: #F4A460 !important; /* Sandy background color */
-    color: #4B3621; /* Dark brown text color */
+    font-family: "Ultra", serif !important;
+    background-color: #F4A460 !important; 
+    color: #4B3621; 
 }
 
 p {
-    font-family: "Roboto Slab", serif;
+    font-family: "Ultra", serif;
 }
 
-/* Additional styling for lists and code */
 ul {
-    list-style-type: square; /* Change bullet style to squares */
+    list-style-type: square; 
 }
 
 code {
-    font-family: "Courier New", monospace; /* Use a monospaced font for code */
-    background-color: #FFF5EE; /* Light sandy background for code */
-    color: #8B4513; /* Saddle brown for code text */
+    font-family: "Courier New", monospace; 
+    background-color: #FFF5EE; 
+    color: #8B4513;
     padding: 2px 4px;
     border-radius: 4px;
 }
 
-/* Add some margin and padding to make the text more readable */
 #main_content {
     margin: 20px;
     padding: 20px;
     border: 2px solid #8B4513;
-    background-color: #FFFAF0; /* Floral white background */
+    background-color: #FFFAF0; 
     border-radius: 8px;
 }
