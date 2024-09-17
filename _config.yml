@@ -1,3 +1,2 @@
-theme: jekyll-theme-merlot
 include:
   - assets/css/style.scss
