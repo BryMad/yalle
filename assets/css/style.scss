@@ -1,13 +1,21 @@
 ---
 ---
 @import "{{ site.theme }}";
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Warang+Citi&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
 
-body{
-   font-family: "Noto Sans Warang Citi", sans-serif;
-   background-color: lightblue !important;
+body {
+    font-family: "Roboto", sans-serif !important;
+    background-color: lightblue !important; /* Keeping this to see if styles apply */
 }
 
-h1{
-   font-family: "Noto Sans Warang Citi", sans-serif;
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Roboto", sans-serif !important;
+    font-weight: 700; /* Makes headers bold for more noticeable change */
+    color: darkblue; /* Changing color to ensure it's noticeable */
+}
+
+p {
+    font-family: "Roboto", sans-serif !important;
+    font-size: 18px; /* Larger size for noticeable difference */
+    line-height: 1.6;
 }
