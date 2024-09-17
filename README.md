@@ -52,6 +52,7 @@ node src/yalle.js <filename> <outputType>
 <tr><td>js |  node </td><td>pipe output into node to compile and run</td></tr>
 </table>
 
+
 Here are some examples you can do straight out the gate from a cloned repo.
 
 Get an "analyzed" program representation of the file:
