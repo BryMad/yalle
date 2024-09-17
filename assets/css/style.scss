@@ -1,6 +1,10 @@
 @import "{{ site.theme }}";
-@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Warang+Citi&display=swap');
 
 body{
-   font-family: 'Open Sans',serif;
+   font-family: "Noto Sans Warang Citi", sans-serif;
+}
+
+h1{
+   font-family: "Noto Sans Warang Citi", sans-serif;
 }
