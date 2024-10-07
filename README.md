@@ -1,5 +1,3 @@
-# YALL\*E
-
 ![](docs/logo.png)
 
 ### A LoneStar Codin' Experience
@@ -9,17 +7,6 @@ Experts have prophesied that American regional dialects will one day be extinct.
 <br>
 
 <br>
-
-# The Basics
-
-- Your basic types: int, float, string, boolean.
-- Type constructors: arrays, ranches (aka structs), optionals, tasks (aka functions)
-- a bottom type void, for when you need a type that don't mean nothin’.
-- a top any type any to corral all kinds of types
-- Statically typed
-- "Texas Strong"ly Typed w/ no implicit type conversions.
-- Type inference for local variables
-- Yalle is completely null-safe.
 
 # Building
 
@@ -66,7 +53,31 @@ Run the file to calculate the stocking rate of a ranch:
 node src/yalle.js examples/ranches.yalle js | node
 ```
 
-# VARIABLES
+<br>
+<br>
+
+# The Basics
+
+Yalle has...
+
+- Your basic types: int, float, string, boolean.
+- Type constructors: arrays, ranches (aka structs), optionals, and tasks (aka functions)
+- a bottom type `void`, for when you need a type that don't have a type
+- a top any type `any` to corral all kinds of types
+- Statically typed
+- "Texas Strong"ly Typed w/ no implicit type conversions.
+- Type inference for local variables
+- Yalle is completely null-safe.
+  <br>
+  <br>
+
+# Programs
+
+A program in Yalle is a sequence of statements. Each must be terminated with a `;`.
+<br>
+<br>
+
+# Variables
 
 Yalle's variables come in two flavors: `tags` and `brands`.
 
@@ -78,33 +89,81 @@ In keeping with the Texas theme, the variable assignment operator is bit more of
 
 Variables directly store values for booleans, numbers, and strings, but only hold references to arrays, ranches, tasks, and optionals.
 
-<!-- TODO EXAMPLES -->
-
 ```
-tag yearsSinceAlamo -= 188;             // writable tag
-brand alamoYear -= 1836;               // non-writable brand
+tag yearsSinceAlamo -= 187;              // writable tag
+brand alamoYear -= 1836;                 // non-writable brand
 
-tearsSinceAlamo -= yearsSinceAlamo + 1 //
+yearsSinceAlamo -= yearsSinceAlamo + 1;  // tag re-assigned
+// alamoYear -= 1776                     // error! Brands are for life!
 ```
 
-# TASKS
+<br>
+<br>
 
-Workin' on the land, you've your chores and those break down into simple tasks, which is why we call our functions `tasks`. All tasks must be named and no anonymous functions round here.
+# Tasks
+
+Workin' on the land, you've got your chores which break down into simple tasks, which is why we call our functions `tasks`. All tasks must be named. No anonymous functions 'round here.
 
 Task declarations and invocations are a bit ugly, but we had to get a shoutout to the official state mammal of Texas: the majestic longhorn.
 
-So instead of parens to house your parameters when declaring a function, you use the left and right horns of a longhorn `\_` and `_/`. If you've got parameters to list out inside those horns, their ids get connected to their type with an underscore `_` (which makes the horns of the longhorn even longer). An optional return type can be specified after the longhorns are "closed" and uses the more normal colon `:` syntax.
+So instead of parens to house your parameters when declaring a function, you use the left and right horns of a longhorn `\_` and `_/`. If you've got parameters to list out inside those horns, their ids get connected to their type with an underscore `_` (you must have one underscore, but you can add as many as you like to make the longhorns even longer!). An optional return type can be specified after the longhorns are "closed" and uses the more classic colon `:` syntax. Multiple params are still sepearated with commas `,`.
 
-Tasks are also invoked using longhorn magic as well.
+Tasks are also invoked using longhorn magic as well `\__/`.
 
-<!-- TODO EXAMPLES  tasks declared, tasks, optional invoked-->
+```
+task addNine\_num_int_/: int      // Longhorn params, w/ return type
+    ~~{ roundup num + 9; }
+task double\_num_______int_/: int // Overly long longhorns allowed!
+    ~~{ roundup num * 2; }
 
-# RANCHES
+holler\_double\_addNine\_1_/_/_/;  // 20
+```
 
-Ranches or structs in Yalle are declared
+It obviously can get a little messy when invocations are geting nested (since horns don't look as nice nested as parentheses), but sometimes chaos is the price you gotta pay to go big!
+<br>
+<br>
 
-# BLOCKS
+# Ranches
 
-# statements
+Ranches are structs in Yalle.
 
-need semicolons
+Following the theme of making things bigger (and arguably more complicated!), Ranches need to be declared with barbed wire `-x-x-x-x-` to stake your claim:
+
+```
+ranch RanchInfo
+    -x-x-x-x-
+        acres: float
+        cattle: float
+    -x-x-x-x-
+```
+
+Ranches can then be created by initializing them with their type name. Don't forget the cattle prod assignment operator or the longhorn invocation:
+
+```
+brand KingRanch -= RanchInfo\_825000.0, 35000.0_/;
+```
+
+<br>
+<br>
+
+# Lasso Statements
+
+We call Block Statements "Lasso Statements" because their curly brackets need a `~~` to make them look more lasso like:
+
+```
+iffin' (chipsLevel < 1) addNine\_num_int_/: int
+    ~~{ roundup num + 9; }
+```
+
+<br>
+<br>
+
+# Control Flow and Other Keywords
+
+Yalle has control flow with `iffin` statements (if), `otherwise` statements (else), and `till` statements (while).
+
+You break loops with a `whoa`.
+
+You print with a `holler`.
+
+You return with a `roundup`.
