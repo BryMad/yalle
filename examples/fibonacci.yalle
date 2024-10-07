@@ -1,14 +1,14 @@
-task nthFibonacci(n: int): int 
+task nthFibonacci\_n_int_/: int 
     ~~{
         iffin n<0
-            ~~{holler("must enter a number greater than 0");}
+            ~~{holler\_"must enter a number greater than 0"_/;}
         otherwise iffin n == 0
             ~~{roundup 0;}
         otherwise iffin n == 1
             ~~{roundup 1;}
         otherwise
-            ~~{roundup nthFibonacci(n-1) + nthFibonacci(n-2);}
+            ~~{roundup nthFibonacci\_n-1_/ + nthFibonacci\_n-2_/;}
     }
         
         
-holler(nthFibonacci(4)); // 3
+holler\_nthFibonacci\_4_/_/; // 3 (zero indexed)

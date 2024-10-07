@@ -19,7 +19,7 @@ Yalle {
   Field       = id ":" Type
   FunDecl     = function id Params (":" Type)? Block
   Params      = "\\_" ListOf<Param, ","> "_/"
-  Param       = id "_" Type
+  Param       = id ("_")+ Type
 
   Type        = Type "?"                                      --optional
               | "[" Type "]"                                  --array
@@ -62,7 +62,7 @@ Yalle {
               | floatlit ~mut
               | intlit ~mut
               | no Type ~mut                                  --emptyopt
-              | Exp9 ("(" | "?(") ListOf<Exp, ","> ")" ~mut   --call
+              | Exp9 ("\\_" | "?(") ListOf<Exp, ","> "_/" ~mut   --call
               | Exp9 ("[" | "?[") Exp "]"                     --subscript
               | Exp9 ("." | "?.") id                          --member
               | stringlit ~mut

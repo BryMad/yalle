@@ -1,7 +1,7 @@
 // given how many horses and horseshoes you have....
 // reckon how many horseshoes you need to git at the store to reshoe all your horses
 
-task getHorseshoesNeeded(horses: int, currentShoes: int): int ~~{
+task getHorseshoesNeeded\_horses_int, currentShoes_int_/: int ~~{
   tag shoesNeeded -= horses * 4;
   tag shoesMissing -= shoesNeeded - currentShoes;
   iffin shoesMissing > 0 
@@ -10,5 +10,5 @@ task getHorseshoesNeeded(horses: int, currentShoes: int): int ~~{
     ~~{ roundup 0;}
 }
 
-holler(getHorseshoesNeeded(16, 393)); // 0 needed!
-holler(getHorseshoesNeeded(5, 15)); // 0 needed!
+holler\_getHorseshoesNeeded\_16, 393_/_/; // 0 needed!
+holler\_getHorseshoesNeeded\_5, 15_/_/; // 5 needed!

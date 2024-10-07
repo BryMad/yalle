@@ -8,7 +8,7 @@ describe("Equality Test", () => {
   });
 });
 
-const sampleProgram = "holler(0);"
+const sampleProgram = "holler\\_0_/;"
 
 describe("The compiler", () => {
   it("throws when the output type is missing", done => {

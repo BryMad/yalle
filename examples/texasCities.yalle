@@ -1,0 +1,21 @@
+ranch cityData
+    -x-x-x-x-
+        name: string
+        population: float
+        size: float         // in square miles
+        avgHomeCost: float
+    -x-x-x-x-
+
+
+brand Dallas -= cityData\_"Dallas", 1350000.0, 385.8, 295000.0_/;
+brand Houston -= cityData\_"Houston", 2325000.0, 637.5, 310000.0_/;
+brand Austin -= cityData\_"Austin", 1000000.0, 326.5, 600000.0_/;
+brand SanAntonio -= cityData\_"SanAntonio", 1450000.0, 505.0, 270000.0_/;
+
+tag cityArray -= [Dallas, Houston, Austin, SanAntonio];
+
+for city in cityArray 
+    ~~{holler\_city.name_/;
+       holler\_"population density ="_/;
+       holler\_city.population / city.size_/;}
+

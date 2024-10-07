@@ -1,0 +1,9 @@
+tag currentYear -= 2024;
+
+brand alamoYear -= 1836;
+
+tag yearsSinceAlamo -= currentYear - alamoYear;
+
+yearsSinceAlamo -= yearsSinceAlamo + 1;
+
+holler\_yearsSinceAlamo_/;

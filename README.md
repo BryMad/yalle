@@ -66,36 +66,45 @@ Run the file to calculate the stocking rate of a ranch:
 node src/yalle.js examples/ranches.yalle js | node
 ```
 
-# DECLARATIONS
-
-A declaration binds an id to an entity and can be used for types, functions, variables, parameters, iterators, and fields.
-
-<!-- TODO examples -->
-
 # VARIABLES
 
-Variable store values and are type-constrained. Yalle's variables come in two flavors: `tags` and `brands`.
+Yalle's variables come in two flavors: `tags` and `brands`.
 
 Just like a tag on a cow's ear can be swapped out, variables declared with `tag` are writable and can be changed.
 
-And just like a brand is for life, variables declared with `brand` are not writable. You're stuck with 'em!
+Meanwhile brands are for life, so variables declared with `brand` are not writable. You're stuck with 'em!
 
-In keeping with the Texas theme, the variable assignment operator is bit more of a cattle prod/brand shape than your usual equals sign `-=`. But we promise no real cows were hurt the making of this language!
+In keeping with the Texas theme, the variable assignment operator is bit more of a cattle prod/brand shape `-=` vs. your usual equals sign. We promise no real cows were hurt the making of this language!
 
 Variables directly store values for booleans, numbers, and strings, but only hold references to arrays, ranches, tasks, and optionals.
 
 <!-- TODO EXAMPLES -->
 
+```
+tag yearsSinceAlamo -= 188;             // writable tag
+brand alamoYear -= 1836;               // non-writable brand
+
+tearsSinceAlamo -= yearsSinceAlamo + 1 //
+```
+
 # TASKS
 
-Workin' on the land, you've your chores to do that break down into simple tasks, which is why we call our functions `tasks`. All tasks must be name and no anonymous functions.
+Workin' on the land, you've your chores and those break down into simple tasks, which is why we call our functions `tasks`. All tasks must be named and no anonymous functions round here.
 
-Task declarations are a bit ugly, but we had to get some sort of shoutout to the official state mammal of Texas, the majestic longhorn.
+Task declarations and invocations are a bit ugly, but we had to get a shoutout to the official state mammal of Texas: the majestic longhorn.
 
-So instead of parens to house your parameters when declaring a function, you use the left and right horns of a longhorn `\_` and `_/`. If you've got parameters to list out inside those horns, their ids get connected to their type with an underscore `_` just to make the longhorn even longer!
+So instead of parens to house your parameters when declaring a function, you use the left and right horns of a longhorn `\_` and `_/`. If you've got parameters to list out inside those horns, their ids get connected to their type with an underscore `_` (which makes the horns of the longhorn even longer). An optional return type can be specified after the longhorns are "closed" and uses the more normal colon `:` syntax.
 
-<!-- TODO EXAMPLES -->
+Tasks are also invoked using longhorn magic as well.
 
-Optional return types still use the more normal colon `:` syntax after the longhorn parameter list.
+<!-- TODO EXAMPLES  tasks declared, tasks, optional invoked-->
 
-STRUCTS
+# RANCHES
+
+Ranches or structs in Yalle are declared
+
+# BLOCKS
+
+# statements
+
+need semicolons

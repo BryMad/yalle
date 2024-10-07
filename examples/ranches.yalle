@@ -4,9 +4,10 @@ ranch RanchInfo
         cattle: float
     -x-x-x-x-
 
-brand KingRanch -= RanchInfo(825000.0, 35000.0);
+brand KingRanch -= RanchInfo\_825000.0, 35000.0_/;
 
-task getStockingRate(r: RanchInfo): float 
+task getStockingRate\_r_RanchInfo_/: float 
     ~~{roundup r.cattle / r.acres ; }
 
-holler(getStockingRate(KingRanch));
+holler\_"stocking rate = "_/;
+holler\_getStockingRate\_KingRanch_/_/;
