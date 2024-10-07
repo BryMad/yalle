@@ -203,6 +203,8 @@ export default function analyze(match) {
                 return `[${typeDescription(type.baseType)}]`
             case "OptionalType":
                 return `${typeDescription(type.baseType)}?`
+            default:
+                throw new Error(`Unknown type kind: ${type.kind}`)
         }
     }
 

@@ -2,94 +2,94 @@ import assert from "node:assert/strict";
 import parse from "../src/parser.js";
 
 const syntaxChecks = [
-  ["all numeric literal forms", "holler(89.123);"],
-  ["complex expressions", "holler(83 * ((((-((((13 / 21)))))))) + 1 - 0);"],
-  ["all unary operators", "holler(-3); holler (!false);"],
-  ["all binary operators", "holler( (x && y) || z * 1 / 2 ** 3 + 4 < 5);"],
-  [
-    "all arithmetic operators",
-    "brand x -= (!3) * 2 + 4 - (-7.3) * 8 ** 13 / 1;",
-  ],
-  [
-    "all relational operators",
-    "brand x -= 1<(2<=(3==(4!=(5 >= (6>7)))));",
-  ],
-  [
-    "function with multiple parameters",
-    "task calculate(int: a, float: b, string: c) ~~{ roundup 4; }",
-  ],
-  ["for loop with array", "for item in [1, 2, 3, 4] ~~{ holler(item); }"],
-  ["and logical operators", "brand x -= true && false;"],
-  ["end of program inside comment", "holler(0); //yay"],
-  ["comments with no text are ok", "holler(1);//\nholler(0);//"],
-  ["non-Latin letters in identifiers", "コンパイラ -= 100;"],
-  ["return", "roundup x;"],
-  ["break / whoa statement", "whoa ;"],
-  ["complex array types", "task f(x: [[[int?]]?]) ~~{}"],
-  [
-    "conditional 1",
-    "iffin horsehoes < horses * 4 ~~{roundup moreHorseShoes();}",
-  ],
-  [
-    "conditional 2",
-    "iffin horsehoes < horses * 4 ~~{roundup moreHorseShoes();} otherwise ~~{roundup 30;}",
-  ],
-  ["while/till", "till month < 9 ~~{holler(30);}"],
-  ["array type for param", "task f(x: [[[boolean]]]) ~~{}"],
-  ["array type returned", "task fart(): [[int]] ~~{}"],
-  ["function declaration", "task messAround(num:int) ~~{ holler(num); }"],
-  ["nested if", "iffin x > 5 ~~{ iffin y < 10 ~~{ whoa; } }"],
-  ["function declaration", "task myFunc() ~~{ wrastle(3); }"],
-  ["function call with arguments", 'myFunc(42, "hello");'],
-  ["function call with arguments", "myFunc(42, 34);"],
-  [
-    "string literal with escaped characters",
-    'holler("This is a \\"test\\".");',
-  ],
-  ["nested if", "iffin x > 5 ~~{ iffin y < 10 ~~{ holler(3); } }"],
-  ["for loop", "for i in [1,2,3] ~~{ holler(i); }"],
-  [
-    "chained logical and arithmetic operations",
-    "brand result -= (x > 5 && y < 10) || (a + b == c - d);",
-  ],
-  ["struct declaration", "ranch RanchInfo -x-x-x-x- \n acres: int \n cattle: int \n-x-x-x-x-"],
-  ["struct initialized", "brand KingRanch -= RanchoInfo(825000, 35000);"],
-  ["function works", "task calculateHorseshoes(int: horses, int: horseshoes) ~~{iffin horsehoes < horses * 4 ~~{roundup false;}}"],
-  ["optional types", "task f(c: int?): float ~~{}"],
+    ["all numeric literal forms", "holler(89.123);"],
+    ["complex expressions", "holler(83 * ((((-((((13 / 21)))))))) + 1 - 0);"],
+    ["all unary operators", "holler(-3); holler (!false);"],
+    ["all binary operators", "holler( (x && y) || z * 1 / 2 ** 3 + 4 < 5);"],
+    [
+        "all arithmetic operators",
+        "brand x -= (!3) * 2 + 4 - (-7.3) * 8 ** 13 / 1;",
+    ],
+    [
+        "all relational operators",
+        "brand x -= 1<(2<=(3==(4!=(5 >= (6>7)))));",
+    ],
+    [
+        "function with multiple parameters",
+        "task calculate\\_int_ a, float_ b, string_ c_/ ~~{ roundup 4; }",
+    ],
+    ["for loop with array", "for item in [1, 2, 3, 4] ~~{ holler(item); }"],
+    ["and logical operators", "brand x -= true && false;"],
+    ["end of program inside comment", "holler(0); //yay"],
+    ["comments with no text are ok", "holler(1);//\nholler(0);//"],
+    ["non-Latin letters in identifiers", "コンパイラ -= 100;"],
+    ["return", "roundup x;"],
+    ["break / whoa statement", "whoa ;"],
+    ["complex array types", "task f\\_x_ [[[int?]]?]_/ ~~{}"],
+    [
+        "conditional 1",
+        "iffin horsehoes < horses * 4 ~~{roundup moreHorseShoes();}",
+    ],
+    [
+        "conditional 2",
+        "iffin horsehoes < horses * 4 ~~{roundup moreHorseShoes();} otherwise ~~{roundup 30;}",
+    ],
+    ["while/till", "till month < 9 ~~{holler(30);}"],
+    ["array type for param", "task f\\_x_ [[[boolean]]]_/ ~~{}"],
+    ["array type returned", "task boo\\__/: [[int]] ~~{}"],
+    ["function declaration", "task messAround\\_num_int_/ ~~{ holler(num); }"],
+    ["nested if", "iffin x > 5 ~~{ iffin y < 10 ~~{ whoa; } }"],
+    ["function declaration", "task myFunc\\__/ ~~{ wrastle(3); }"],
+    ["function call with arguments", 'myFunc(42, "hello");'],
+    ["function call with arguments", "myFunc(42, 34);"],
+    [
+        "string literal with escaped characters",
+        'holler("This is a \\"test\\".");',
+    ],
+    ["nested if", "iffin x > 5 ~~{ iffin y < 10 ~~{ holler(3); } }"],
+    ["for loop", "for i in [1,2,3] ~~{ holler(i); }"],
+    [
+        "chained logical and arithmetic operations",
+        "brand result -= (x > 5 && y < 10) || (a + b == c - d);",
+    ],
+    ["struct declaration", "ranch RanchInfo -x-x-x-x- \n acres: int \n cattle: int \n-x-x-x-x-"],
+    ["struct initialized", "brand KingRanch -= RanchoInfo(825000, 35000);"],
+    ["function works", "task calculateHorseshoes\\_int_ horses, int_ horseshoes_/ ~~{iffin horsehoes < horses * 4 ~~{roundup false;}}"],
+    ["optional types", "task f\\_c_ int?_/: float ~~{}"],
 ];
 
 const syntaxErrors = [
-  ["non-letter in an identifier", "ab😭c = 2", /Line 1, col 3/],
-  ["malformed number", "x-= 2.", /Line 1, col 7/],
-  ["missing semicolon", "x -= 3 y -= 1", /Line 1, col 8/],
-  ["a missing right operand", "holler(5 -)", /Line 1, col 11/],
-  ["a non-operator", "holler(7 * ((2 _ 3)", /Line 1, col 16/],
-  ["an expression starting with a )", "x -= );", /Line 1, col 6/],
-  ["a statement starting with expression", "x * 5;", /Line 1, col 3/],
-  ["an illegal statement on line 2", "holler(5);\nx * 5;", /Line 2, col 3/],
-  ["a statement starting with a )", "holler(5);\n) * 5", /Line 2, col 1/],
-  ["an expression starting with a *", "x -= * 71;", /Line 1, col 6/],
-  ["bad break statement", "whoa 5;", /Line 1, col 6/],
-  ["too short lasso", "~{x};", /Line 1, col 1/],
-  ["double if", "iffin iffin x == 2", /Line 1, col 7/],
-  ["missing brand handle", "brand x = 5;", /Line 1, col 9/],
-  ["missing semicolon", "iffin x > 5 ~~{ holler(x)}", /Line 1, col 26/],
-  ["misplaced semicolon", "iffin x > 5; ~~{ holler(x);", /Line 1, col 12/],
-  ["missing block closure", "iffin x > 5 ~~{ holler(x);", /Line 1, col 27/],
-  ["wrong symbol in expression", "x -= 5 $ 3;", /Line 1, col 8/],
-  ["unterminated string", 'holler("This is a test);', /Line 1, col 25/],
-  ["wrong break", "iffin x > 5 ~~{ break; }", /Line 1, col 22/]
+    ["non-letter in an identifier", "ab😭c = 2", /Line 1, col 3/],
+    ["malformed number", "x-= 2.", /Line 1, col 7/],
+    ["missing semicolon", "x -= 3 y -= 1", /Line 1, col 8/],
+    ["a missing right operand", "holler(5 -)", /Line 1, col 11/],
+    ["a non-operator", "holler(7 * ((2 _ 3)", /Line 1, col 16/],
+    ["an expression starting with a )", "x -= );", /Line 1, col 6/],
+    ["a statement starting with expression", "x * 5;", /Line 1, col 3/],
+    ["an illegal statement on line 2", "holler(5);\nx * 5;", /Line 2, col 3/],
+    ["a statement starting with a )", "holler(5);\n) * 5", /Line 2, col 1/],
+    ["an expression starting with a *", "x -= * 71;", /Line 1, col 6/],
+    ["bad break statement", "whoa 5;", /Line 1, col 6/],
+    ["too short lasso", "~{x};", /Line 1, col 1/],
+    ["double if", "iffin iffin x == 2", /Line 1, col 7/],
+    ["missing brand handle", "brand x = 5;", /Line 1, col 9/],
+    ["missing semicolon", "iffin x > 5 ~~{ holler(x)}", /Line 1, col 26/],
+    ["misplaced semicolon", "iffin x > 5; ~~{ holler(x);", /Line 1, col 12/],
+    ["missing block closure", "iffin x > 5 ~~{ holler(x);", /Line 1, col 27/],
+    ["wrong symbol in expression", "x -= 5 $ 3;", /Line 1, col 8/],
+    ["unterminated string", 'holler("This is a test);', /Line 1, col 25/],
+    ["wrong break", "iffin x > 5 ~~{ break; }", /Line 1, col 22/]
 ];
 
 describe("The parser", () => {
-  for (const [scenario, source] of syntaxChecks) {
-    it(`properly specifies ${scenario}`, () => {
-      assert(parse(source).succeeded());
-    });
-  }
-  for (const [scenario, source, errorMessagePattern] of syntaxErrors) {
-    it(`does not permit ${scenario}`, () => {
-      assert.throws(() => parse(source), errorMessagePattern);
-    });
-  }
+    for (const [scenario, source] of syntaxChecks) {
+        it(`properly specifies ${scenario}`, () => {
+            assert(parse(source).succeeded());
+        });
+    }
+    for (const [scenario, source, errorMessagePattern] of syntaxErrors) {
+        it(`does not permit ${scenario}`, () => {
+            assert.throws(() => parse(source), errorMessagePattern);
+        });
+    }
 });

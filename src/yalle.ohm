@@ -18,8 +18,8 @@ Yalle {
   
   Field       = id ":" Type
   FunDecl     = function id Params (":" Type)? Block
-  Params      = "(" ListOf<Param, ","> ")"
-  Param       = id ":" Type
+  Params      = "\\_" ListOf<Param, ","> "_/"
+  Param       = id "_" Type
 
   Type        = Type "?"                                      --optional
               | "[" Type "]"                                  --array

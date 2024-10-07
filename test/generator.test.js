@@ -5,13 +5,13 @@ import optimize from "../src/optimizer.js"
 import generate from "../src/generator.js"
 
 function dedent(s) {
-  return `${s}`.replace(/(?<=\n)\s+/g, "").trim()
+    return `${s}`.replace(/(?<=\n)\s+/g, "").trim()
 }
 
 const fixtures = [
-  {
-    name: "small",
-    source: `
+    {
+        name: "small",
+        source: `
       tag x -= 3 * 7;
       x++;
       x--;
@@ -19,7 +19,7 @@ const fixtures = [
       y -= 5 ** -x / -100 > - x || false;
       holler((y && y) || false || (x*2) != 5);
     `,
-    expected: dedent`
+        expected: dedent`
       let x_1 = 21;
       x_1++;
       x_1--;
@@ -27,17 +27,17 @@ const fixtures = [
       y_2 = (((5 ** -(x_1)) / -(100)) > -(x_1));
       console.log(((y_2 && y_2) || ((x_1 * 2) !== 5)));
     `,
-  },
-  {
-    name: "if",
-    source: `
+    },
+    {
+        name: "if",
+        source: `
       tag x -= 0;
       iffin (x == 0) ~~{ holler("1"); }
       iffin (x == 0) ~~{ holler(1); } otherwise ~~{ holler(2); }
       iffin (x == 0) ~~{ holler(1); } otherwise iffin (x == 2) ~~{ holler(3); }
       iffin (x == 0) ~~{ holler(1); } otherwise iffin (x == 2) ~~{ holler(3); } otherwise ~~{ holler(4); }
     `,
-    expected: dedent`
+        expected: dedent`
       let x_1 = 0;
       if ((x_1 === 0)) {
         console.log("1");
@@ -62,10 +62,10 @@ const fixtures = [
           console.log(4);
         }
     `,
-  },
-  {
-    name: "till",
-    source: `
+    },
+    {
+        name: "till",
+        source: `
       tag x -= 0;
       till x < 5 ~~{
         tag y -= 0;
@@ -77,7 +77,7 @@ const fixtures = [
         x -= x + 1;
       }
     `,
-    expected: dedent`
+        expected: dedent`
       let x_1 = 0;
       while ((x_1 < 5)) {
         let y_2 = 0;
@@ -89,21 +89,21 @@ const fixtures = [
         x_1 = (x_1 + 1);
       }
     `,
-  },
-  {
-    name: "tasks",
-    source: `
+    },
+    {
+        name: "tasks",
+        source: `
       tag z -= 0.5;
-      task f(x: float, y: boolean) ~~{
+      task f\\_x_ float, y_ boolean_/ ~~{
         holler(sin(x) > π);
         roundup;
       }
-      task g(): boolean ~~{
+      task g\\__/: boolean ~~{
         roundup false;
       }
       f(z, g());
     `,
-    expected: dedent`
+        expected: dedent`
       let z_1 = 0.5;
       function f_2(x_3, y_4) {
         console.log((Math.sin(x_3) > Math.PI));
@@ -114,32 +114,32 @@ const fixtures = [
       }
       f_2(z_1, g_5());
     `,
-  },
-  {
-    name: "arrays",
-    source: `
+    },
+    {
+        name: "arrays",
+        source: `
       tag a -= [true, false, true];
       tag b -= [10, #a - 20, 30];
       brand c -= [[int]]();
       brand d -= random b;
       holler(a[1] || (b[0] < 88 ? false : true));
     `,
-    expected: dedent`
+        expected: dedent`
       let a_1 = [true,false,true];
       let b_2 = [10,(a_1.length - 20),30];
       let c_3 = [];
       let d_4 = ((a=>a[~~(Math.random()*a.length)])(b_2));
       console.log((a_1[1] || (((b_2[0] < 88)) ? (false) : (true))));
     `,
-  },
-  {
-    name: "ranches",
-    source: `
+    },
+    {
+        name: "ranches",
+        source: `
       ranch S -x-x-x-x- x: int -x-x-x-x-
       tag x -= S(3);
       holler(x.x);
     `,
-    expected: dedent`
+        expected: dedent`
       class S_1 {
       constructor(x_2) {
       this["x_2"] = x_2;
@@ -148,17 +148,17 @@ const fixtures = [
       let x_3 = new S_1(3);
       console.log((x_3["x_2"]));
     `,
-  },
-  {
-    name: "optionals",
-    source: `
+    },
+    {
+        name: "optionals",
+        source: `
       tag x -= no int;
       tag y -= x ?? 2;
       ranch S -x-x-x-x- x: int -x-x-x-x-
       tag z -= someodd S(1);
       tag w -= z?.x;
     `,
-    expected: dedent`
+        expected: dedent`
       let x_1 = undefined;
       let y_2 = (x_1 ?? 2);
       class S_3 {
@@ -169,10 +169,10 @@ const fixtures = [
       let z_5 = new S_3(1);
       let w_6 = (z_5?.["x_4"]);
     `,
-  },
-  {
-    name: "for loops",
-    source: `
+    },
+    {
+        name: "for loops",
+        source: `
       for i in 1..<50 ~~{
         holler(i);
       }
@@ -185,7 +185,7 @@ const fixtures = [
       for k in 1...10 ~~{
       }
     `,
-    expected: dedent`
+        expected: dedent`
       for (let i_1 = 1; i_1 < 50; i_1++) {
         console.log(i_1);
       }
@@ -197,29 +197,29 @@ const fixtures = [
       for (let k_4 = 1; k_4 <= 10; k_4++) {
       }
     `,
-  },
-  {
-    name: "standard library",
-    source: `
+    },
+    {
+        name: "standard library",
+        source: `
       tag x -= 0.5;
       holler(sin(x) - cos(x) + exp(x) * ln(x) / hypot(2.3, x));
       holler(bytes("∞§¶•"));
       holler(codepoints("💪🏽💪🏽🖖👩🏾💁🏽‍♀️"));
     `,
-    expected: dedent`
+        expected: dedent`
       let x_1 = 0.5;
       console.log(((Math.sin(x_1) - Math.cos(x_1)) + ((Math.exp(x_1) * Math.log(x_1)) / Math.hypot(2.3,x_1))));
       console.log([...Buffer.from("∞§¶•", "utf8")]);
       console.log([...("💪🏽💪🏽🖖👩🏾💁🏽‍♀️")].map(s=>s.codePointAt(0)));
     `,
-  },
+    },
 ]
 
 describe("The code generator", () => {
-  for (const fixture of fixtures) {
-    it(`produces expected js output for the ${fixture.name} program`, () => {
-      const actual = generate(optimize(analyze(parse(fixture.source))))
-      assert.deepEqual(actual, fixture.expected)
-    })
-  }
+    for (const fixture of fixtures) {
+        it(`produces expected js output for the ${fixture.name} program`, () => {
+            const actual = generate(optimize(analyze(parse(fixture.source))))
+            assert.deepEqual(actual, fixture.expected)
+        })
+    }
 })
